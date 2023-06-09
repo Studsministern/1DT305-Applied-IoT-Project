@@ -50,13 +50,16 @@ Describe why you have chosen to build this specific device. What purpose does it
 
 -->
 
-#### Sensors
+#### DHT11
 
-##### DHT11
+The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output. The sensor is manufactured by Elegoo and was included as a part of the a Linnaeus University Starter Kit but can also be bought for 49 SEK [here](https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/).
 
-The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output. The model used in this project is manufactured by Elegoo and includes a 10 k&Omega; pullup resistor, which means no extra resistor is needed in the circuit. The sensor was included as a part of the a Linnaeus University Starter Kit on [electrokit.com](https://www.electrokit.com) but can also be bought for 49 SEK [here](https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/). Different datasheets showed different required voltages, some recommended 3.3 V and others recommended 5 V. Testing showed that a V<sub>dd</sub> voltage of 3.3 V works very well, which can be supplied by pin 36 (`3V3(OUT)`) on the RP2. The measurement specifications for the sensor can be found in Table 1, below.
+Different datasheets showed different required voltages, some recommended 3.3 V and others recommended 5 V. Testing showed that a V<sub>dd</sub> voltage of 3.3 V works very well, which can be supplied by pin 36 (`3V3(OUT)`) on the RP2. The Elegoo manufactured DHT11 includes a 10 k&Omega; pullup resistor, which means no extra resistor is needed in the circuit. Measurement specifications are included in Table 1, below.
 
-_Table 1. RH = Relative Humidity, the amount of vapor present in air expressed as a percentage (%RH) of what is required to achieve saturation at the same temperature. Data received from the [DHT11 datasheet on electrokit.com](https://www.electrokit.com/uploads/productfile/41015/DHT11.pdf)._
+<div align="center">
+        <h6>
+            <b>Table 1</b>. RH = Relative Humidity, the amount of vapor present in air expressed as a percentage (%RH) of what is required to achieve saturation at the same temperature. Data received from the <a href="https://www.electrokit.com/uploads/productfile/41015/DHT11.pdf">DHT11 datasheet</a> on the <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">DHT11 product page</a>.
+        </h6>
 
 | Measurement Range | Humidity Accuracy | Temperature Accuracy | Resolution            |
 | ----------------- | ----------------- | -------------------- | --------------------- |
@@ -65,7 +68,8 @@ _Table 1. RH = Relative Humidity, the amount of vapor present in air expressed a
 
 <!-- From data sheet: DHT11’s power supply is 3-5.5V DC. When power is supplied to the sensor, do not send any instruction to the sensor in within one second in order to pass the unstable status. One
 capacitor valued 100nF can be added between VDD and GND for power filtering. -->
-
+</div>
+    
 ### Computer setup
 
 <!--
