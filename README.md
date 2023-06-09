@@ -50,11 +50,11 @@ Describe why you have chosen to build this specific device. What purpose does it
 
 -->
 
-#### DHT11
+#### DHT11 Temperature & Humidity Sensor
 
-The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output. The sensor is manufactured by Elegoo and was included as a part of the a Linnaeus University Starter Kit but can also be bought for 49 SEK [here](https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/).
+The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output. The sensor is manufactured by Elegoo can be bought for 49 SEK [here, from electrokit.com](https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/).
 
-Different datasheets showed different required voltages, some recommended 3.3 V and others recommended 5 V. Testing showed that a V<sub>dd</sub> voltage of 3.3 V works very well, which can be supplied by pin 36 (`3V3(OUT)`) on the RP2. The Elegoo manufactured DHT11 includes a 10 k&Omega; pullup resistor, which means no extra resistor is needed in the circuit. Measurement specifications are included in Table 1, below.
+Different datasheets showed different recommended voltages, from 3.3 V to 5 V. Testing showed that a V<sub>dd</sub> voltage of 3.3 V works very well. In this project V<sub>dd</sub> is supplied by pin 36 (`3V3(OUT)`) on the RP2. The Elegoo manufactured DHT11 includes a 10 k&Omega; pullup resistor, which means no extra resistor is needed in the circuit. Measurement specifications are included in Table 1, below.
 
 <div align="center">
         <h6>
@@ -66,10 +66,25 @@ Different datasheets showed different required voltages, some recommended 3.3 V 
 | 20-90%RH          | &plusmn;5%RH      | &plusmn;2 &deg;C     | Temperature: 1 &deg;C |
 | 0-50 &deg;C       |                   |                      | Humidity: 1%RH        |
 
-<!-- From data sheet: DHT11’s power supply is 3-5.5V DC. When power is supplied to the sensor, do not send any instruction to the sensor in within one second in order to pass the unstable status. One
-capacitor valued 100nF can be added between VDD and GND for power filtering. -->
+<!-- From data sheet: DHT11’s power supply is 3-5.5V DC. When power is supplied to the sensor, do not send any instruction to the sensor in within one second in order to pass the unstable status. One capacitor valued 100nF can be added between VDD and GND for power filtering. -->
+
+> A great example from Linnaeus University for a RP2 specifically is on this link: https://github.com/iot-lnu/applied-iot/tree/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/sensor-examples/P5_DHT_11_DHT_22
+
 </div>
-    
+
+#### FC-28 Soil Moisture Sensor
+
+The FC-28 Soil Moisture Sensor measures the resistance between the two exposed pads. This is converted to a voltage (0 to V<sub>CC</sub>) which can be measured by a microcontroller to determine the moisture of the soil. The sensor can be bought for 29 SEK [here, from electrokit.com](https://www.electrokit.com/produkt/jordfuktighetssensor/).
+
+The sensor requires an input voltage V<sub>CC</sub> of 3.3-5 V. In this project V<sub>CC</sub> = 3.3 V by supplying voltage from pin 36 (`3V3(OUT)`) on the RP2. The voltage measured by the sensor is availible on two different pinouts:
+
+- The `AO` (Analog output) pinout can be measured to get the sensor's analog voltage of 0 to V<sub>CC</sub>.
+- The `DO` (Digital output) pinout can be measured to get either 0 (`LOW`) or V<sub>CC</sub> (`HIGH`). The sensor has a comparator and a variable resistor on a chip. The voltage measured by the sensor is compared to the voltage produced using the variable resistor, which then sets the `DO` pinout to either `LOW` or `HIGH`.
+
+In this project the `AO` pinout is used. The ADC (Analog-Digital Converter) on the RP2 pin converts the 0-3.3 V to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture).
+
+> A great example for an Arduino is on this link: https://lastminuteengineers.com/soil-moisture-sensor-arduino-tutorial/
+
 ### Computer setup
 
 <!--
@@ -116,6 +131,23 @@ s.send(package)
 
 # Explain your code!
 ```
+-->
+
+The file structure is:
+
+```graphql
+boot.py - # Runs on startup
+main.py - # Runs when boot is completed
+pymakr.conf - # Micropython configuration file
+lib/* - # Library files
+```
+
+<!--
+├─ example - # example file
+├─ lib/folder/* - # example folder in library
+│  ├─ example - # example file in folder
+│  └─ Everything else... - # everything else, should not be needed
+└─ example - # example file
 -->
 
 ### Transmitting the data / connectivity
