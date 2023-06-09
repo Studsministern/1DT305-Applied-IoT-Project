@@ -1,40 +1,60 @@
 # 1DT305-Applied-IoT-Project
 
-> The structure of the README is based on a [template markdown file on hackmd](https://hackmd.io/@lnu-iot/iot-tutorial). It will eventually become the tutorial for how to make my project.
+## Introduction
 
-&nbsp;
+My name is Eric Weidow and I am an Electrical Engineering student at LTH in Lund, Sweden. As I wanted more practical experience with electronics and programming, I signed up for a summer course in Applied IoT a Linnaeus University (student credentials: ew223me), Sweden, and this project is part of that course.
 
-<!--
-**Please keep the total length of the tutorial below 25k characters.** You can include code that is linked to a repository. Keep the code snippets in the tutorial short.
--->
+The project is made up of a Raspberry Pi Pico WH (henceforth called **RP2**) with two sensors to measure air temperature, air humidity, and the soil moisture for an indoor plant. The data is sent via Wi-Fi to a backend, where the data is stored. A dashboard is then used to display the stored data to the user.
 
-## Tutorial on how to build a temperature and humidity sensor
+> TBD: Storage solution, vizualisation solution, approximate build time. 
+
+The goal of this project is being able to visualize and predict the soil humidity for an indoor plant, and notify the user when the plant should be watered. As both air temperature and air humidity is measured, the goal is that the prediction of when the plant needs to be watered can be improved based on this data. I will use this IoT device as a way for reminding me when to water my plants, as I have always been bad at taking care of them. Additionally, it will give me a great amount of experience with:
+- Microcontrollers
+- Sensors
+- Communication between microcontrollers and sensors
+- IoT concepts and principles
+- Network protocols
+- Cloud storage solutions
+- Creating dashboards
+- _...and much more!_
 
 <!--
 Give a short and brief overview of what your project is about.
 What needs to be included:
 
 - [ ] Title
-- [ ] Your name and student credentials (xx666x)
-- [ ] Short project overview
+- [x] Your name and student credentials (xx666x)
+- [x] Short project overview
 - [ ] How much time it might take to do (approximation)
-
 -->
-
-### Objective
 
 <!--
 Describe why you have chosen to build this specific device. What purpose does it serve? What do you want to do with the data, and what new insights do you think it will give?
 
-- [ ] Why you chose the project
-- [ ] What purpose does it serve
-- [ ] What insights you think it will give
+- [x] Why you chose the project
+- [x] What purpose does it serve
+- [x] What insights you think it will give
 
 -->
 
-<!-- The Raspberry Pi Pico W will henceforth be called the RP2, which is a common notation for a Raspberry Pi with a 2040 chip. (?) -->
+&nbsp;
 
-### Material
+## Tutorial
+
+<!-- Please keep the total length of the tutorial below 25k characters. You can include code that is linked to a repository. Keep the code snippets in the tutorial short. -->
+
+### Materials
+
+<!--
+The materials used in this project, along with costs (in SEK) and links to a Swedish reseller, are the following:
+
+| Material             | Cost              | Link |
+| -------------------- | ----------------- |      |
+| Raspberry Pi Pico WH |                   |      |
+|                      |                   |      |
+
+The Raspberry Pi Pico W will henceforth be called the RP2, which is a common notation for a Raspberry Pi with a 2040 chip.
+-->
 
 <!--
 > Explain all material that is needed. All sensors, where you bought them and their specifications. Please also provide pictures of what you have bought and what you are using.
@@ -65,12 +85,12 @@ Different datasheets showed different recommended voltages, from 3.3 V to 5 V. T
 | ----------------- | ----------------- | -------------------- | --------------------- |
 | 20-90%RH          | &plusmn;5%RH      | &plusmn;2 &deg;C     | Temperature: 1 &deg;C |
 | 0-50 &deg;C       |                   |                      | Humidity: 1%RH        |
+          
+</div>
 
 <!-- From data sheet: DHT11’s power supply is 3-5.5V DC. When power is supplied to the sensor, do not send any instruction to the sensor in within one second in order to pass the unstable status. One capacitor valued 100nF can be added between VDD and GND for power filtering. -->
 
-> A great example from Linnaeus University for a RP2 specifically is on this link: https://github.com/iot-lnu/applied-iot/tree/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/sensor-examples/P5_DHT_11_DHT_22
-
-</div>
+&nbsp;
 
 #### FC-28 Soil Moisture Sensor
 
@@ -83,7 +103,7 @@ The sensor requires an input voltage V<sub>CC</sub> of 3.3-5 V. In this project 
 
 In this project the `AO` pinout is used. The ADC (Analog-Digital Converter) on the RP2 pin converts the 0-3.3 V to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture).
 
-> A great example for an Arduino is on this link: https://lastminuteengineers.com/soil-moisture-sensor-arduino-tutorial/
+&nbsp;
 
 ### Computer setup
 
@@ -139,10 +159,10 @@ The file structure is:
 boot.py - # Runs on startup
 main.py - # Runs when boot is completed
 pymakr.conf - # Micropython configuration file
-lib/* - # Library files
 ```
 
 <!--
+lib/* - # Library files
 ├─ example - # example file
 ├─ lib/folder/* - # example folder in library
 │  ├─ example - # example file in folder
@@ -183,3 +203,8 @@ Show the final results of your project. Give your final thoughts on how you thin
 -->
 
 ---
+
+## Useful links:
+- [DHT11 sensor example for RP2](https://github.com/iot-lnu/applied-iot/tree/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/sensor-examples/P5_DHT_11_DHT_22)
+- [FC-28 sensor example for Arduino](https://lastminuteengineers.com/soil-moisture-sensor-arduino-tutorial/)
+- [Measuring from the analog pins on RP2](https://pycopy.readthedocs.io/en/latest/rp2/quickref.html#adc-analog-to-digital-conversion)
