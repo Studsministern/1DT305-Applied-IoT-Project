@@ -1,10 +1,23 @@
+from dht import DHT11
 from machine import Pin
 import utime as time
 
-# Set the led pin
-led_onboard = Pin("LED", Pin.OUT)
+dht11 = DHT11(Pin(27))  # DHT11 Constructor with GP27 pin
 
 while True:
-    led_onboard.toggle()
-    ''' Alternative to toggle() is either changing the value() or using on() & off() methods '''
-    time.sleep(.5)       # Delay for 1 second
+    time.sleep(5)
+    try:
+        dht11.measure()  # Measuring values from the sensor
+
+        t = dht11.temperature()  # Getting the temperature in degrees Celcius
+        h = dht11.humidity()  # Getting the humidity in %RH (Relative Humidity)
+
+        print(
+            "Temperature is {} degrees Celsius and Humidity is {}%".format(
+                temperature, humidity
+            )
+        )
+
+    except:
+        print("An exception occured.")
+        continue
