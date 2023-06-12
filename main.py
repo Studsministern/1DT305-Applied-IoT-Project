@@ -1,11 +1,18 @@
 from dht import DHT11
 from machine import ADC, Pin
 import utime as time
+from lib.http import http_get_request
 
 soil_moisture_sensor = ADC(Pin(26)) # Soil moisture sensor with ADC0 pin (GP26)
 dht11 = DHT11(Pin(27))  # DHT11 Constructor with GP27 pin
 
 # TODO: Make the raspberry pi sleep instead of always being active. This both saves battery and makes the soil moisture sensor last longer.
+
+# HTTP request
+try:
+    http_get_request('http://detectportal.firefox.com/')
+except Exception as err:
+    raise err
 
 while True:
     time.sleep(5)
