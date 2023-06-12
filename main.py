@@ -29,10 +29,10 @@ while True:
         humidity = dht11.humidity()
 
         print(
-            "Temperature is {} degrees Celsius. Humidity is {}%RH. Soil moisture is {}%".format(
+            'Temperature is {} degrees Celsius. Humidity is {}%RH. Soil moisture is {}%'.format(
                 temperature, humidity, int(moisture)
             )
         )
     except:
-        print("An exception occured.")
+        print('An exception occured.')
         continue
