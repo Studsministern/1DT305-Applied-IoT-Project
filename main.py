@@ -30,7 +30,7 @@ while True:
 
         print(
             'Temperature is {} degrees Celsius. Humidity is {}%RH. Soil moisture is {}%'.format(
-                temperature, humidity, int(moisture)
+                temperature, humidity, int(moisturePercent)
             )
         )
     except:
