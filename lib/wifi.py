@@ -1,9 +1,11 @@
 def wifi_connect(ssid, password):
-    import utime as time
+    from utime import sleep
     import network
 
     # Put modem on Station mode
     wlan = network.WLAN(network.STA_IF)
+
+    print() # Print an empty line
 
     # Connect if not already connected to WiFi
     if not wlan.isconnected():
@@ -20,9 +22,9 @@ def wifi_connect(ssid, password):
         print('Waiting for connection...', end='')
         while not wlan.isconnected() and wlan.status() >= 0:
             print('.', end='')
-            time.sleep(1)
+            sleep(1)
 
     # Print the IP assigned by router
     ip = wlan.ifconfig()[0]
-    print('\nConnected on {}'.format(ip))
+    print('Connected on {}\n'.format(ip))
     return ip 

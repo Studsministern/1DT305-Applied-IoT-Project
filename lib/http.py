@@ -1,5 +1,5 @@
 def http_get_request(url = 'http://detectportal.firefox.com/'):
-    import utime as time
+    from utime import sleep
     import socket # Used by HTML get request
 
     # Connecting to the host specified by the URL
@@ -10,7 +10,7 @@ def http_get_request(url = 'http://detectportal.firefox.com/'):
 
     # Send HTTP request to the host with specific path
     s.send(bytes('GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n' % (path, host), 'utf8'))    
-    time.sleep(1)                               # Sleep for a second
+    sleep(1)                               # Sleep for a second
     rec_bytes = s.recv(10000)                   # Receve response
     print(rec_bytes)                            # Print the response
     s.close()                                   # Close connection
