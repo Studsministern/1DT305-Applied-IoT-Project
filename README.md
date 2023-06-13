@@ -84,8 +84,8 @@ Different datasheets showed different recommended voltages, from 3.3 V to 5 V. T
 
 | Measurement Range | Humidity Accuracy | Temperature Accuracy | Resolution            |
 | ----------------- | ----------------- | -------------------- | --------------------- |
-| 20-90%RH          | &plusmn;5%RH      | &plusmn;2 &deg;C     | Temperature: 1 &deg;C |
-| 0-50 &deg;C       |                   |                      | Humidity: 1%RH        |
+| 20-90%RH          | &plusmn;5%RH      | &plusmn;2 &deg;C     | Humidity: 1%RH        |
+| 0-50 &deg;C       |                   |                      | Temperature: 1 &deg;C |
 
 </div>
 
@@ -112,22 +112,22 @@ Make sure to go through every step of this setup so you don't miss downloading o
 
 #### Setting up the IDE
 
-For the IDE I chose VS Code. The steps to setup VS Code for Windows with the correct extension (`Pymakr`) are the following:
+For the IDE I chose VS Code. The steps to setup VS Code for Windows with the correct extension (Pymakr) are the following:
 
-1. Download and install the LTS release of Node.js [on this link](https://nodejs.org/en)
-2. Download and install VS Code [on this link](https://code.visualstudio.com/Download)
+1. Download and install the LTS release of Node.js [from this link](https://nodejs.org/en).
+2. Download and install VS Code [from this link](https://code.visualstudio.com/Download).
 3. Open VS Code.
-4. Open the **Extensions manager** from the left panel icon OR press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd>.
+4. Open the **Extensions manager** from the left panel icon _OR_ press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd>.
 5. Search for the **Pymakr** extension and install it.
 
 #### Flashing firmware to the RP2
 
-With the IDE installed, we now need to flash the firmware to the RP2. Make sure you have your RP2 and the USB-cable for these steps:
+With the IDE installed, the firmware now needs to be flashed to the RP2. Make sure you have your RP2 and the USB-cable for these steps:
 
 1. Download the micropython firmware [from this link](https://micropython.org/download/rp2-pico-w/). Make sure that you download the latest firmware from `Releases`, and **not** from `Nightly builds`. You will get a `.uf2` file.
 2. Connect the **micro-usb** end of the cable to the RP2. Firmly hold the back of the USB slot when connecting the cable. There will probably be a small gap even when fully inserted, this is normal.
-3. While holding the **BOOTSEL** button on the RP2, connect the **USB type A** end of the cable to your computer. When you have connected the cable you can release the **BOOTSEL** button.
-4. There should be a new drive on your file system named `RPI-RP2`. This is the RP2 storage. Copy the `.uf2` file you downloaded earlier into this storage. **Do not disconnect the device during this installation! If you do you will most likely need to redo the above steps.**
+3. While holding the <kbd>BOOTSEL</kbd> button on the RP2, connect the **USB type A** end of the cable to your computer. When you have connected the cable you can release the <kbd>BOOTSEL</kbd> button.
+4. There should be a new drive on your file system named `RPI-RP2`. This is the RP2 storage. Copy the `.uf2` file you downloaded earlier into this storage. **Do not disconnect the device during this installation! If you do you will most likely need to redo the above steps of flashing the firmware.**
 5. Your RP2 should now automatically disconnect and reconnect.
 
 #### Cloning and uploading the code
@@ -138,17 +138,17 @@ All code for this project is availible in [the GitHub repository you are current
 2. In VS Code, press <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>P</kbd> to open the editor commands.
 3. Write `Git: Clone` and choose `Git: Clone` when it shows up.
 4. In the field which says `Provide repository URL or pick a repository source.`, copy and paste `https://github.com/Studsministern/1DT305-Applied-IoT-Project`. Press <kbd>ENTER</kbd>.
-5. Navigate to where you want the folder with code to be cloned to. Press `Select as Repository Destination`.
-6. When it has finished cloding, a window saying "Would you like to open the cloned repository, or add it to the current workspace?" will show up. Choose `Open`.
+5. Navigate to where you want the folder with code to be cloned to. Press <kbd>Select as Repository Destination</kbd>.
+6. When it has finished cloding, a window saying "Would you like to open the cloned repository, or add it to the current workspace?" will show up. Press <kbd>Open</kbd>.
+7. Create a file called `env.json` and copy the contents of `env.json.example` into it. Then change the `SSID` and `PASSWORD` values to your WiFi credentials. 
 
-You have now cloned the repository! Upload the code to the RP2 by:
+You have now cloned the repository! Make sure the RP2 is connected to the computer. Upload the code to the RP2 by following these steps:
 
-1. Make sure the RP2 is connected to the computer.
-2. In VS Code, open the **Pymakr window** from the left panel icon. Find the device and press `Connect device` (a small lightning symbol) and `Create terminal` (a box with a right arrow).
-3. Find `PYMAKR: PROJECTS` in either the **Pymakr window** or the **Explorer window** on the left panel.
-4. Click `ADD DEVICES` and select the device.
-5. Press `Sync project to device` (a cloud with an upwards arrow).
-6. If you want the file contents to automatically update as you do changes, find `PYMAKR: PROJECTS -> *Hold your mouse over the project where you just added a device* -> *Click Start development mode*` (a <kbd></></kbd> symbol).
+1. In VS Code, open **Pymakr** from the left panel icon. Find the device and press `Connect device` (a small lightning symbol) and `Create terminal` (a box with a right arrow).
+2. Find `PYMAKR: PROJECTS` in either **Pymakr** or **Explorer** on the left panel.
+3. Press <kbd>ADD DEVICES</kbd> and select the device.
+4. Press `Sync project to device` (a cloud with an upwards arrow).
+5. If you want the file contents to automatically update as you do changes, find `PYMAKR: PROJECTS` again. Hold your mouse over the project. Press <kbd></></kbd> (`Start development mode`).
 
 <!--
 How is the device programmed. Which IDE are you using. Describe all steps from flashing the firmware, installing plugins in your favorite editor. How flashing is done on MicroPython. The aim is that a beginner should be able to understand.
@@ -206,9 +206,16 @@ Using try-except in Python: https://www.w3schools.com/python/python_try_except.a
 The file structure is:
 
 ```graphql
-boot.py - # Runs on startup
-main.py - # Runs when boot is completed
-pymakr.conf - # Micropython configuration file
+boot.py          - # Runs on startup
+main.py          - # Runs when boot is completed
+pymakr.conf      - # Micropython configuration file
+env.json         - # Containing environment variables
+env.json.example - # Example for environment variables
+lib/*            - # Library files
+├─ __init.py__   - # Init file to allow importing from lib
+├─ env.py        - # Handling environment variables
+├─ http.py       - # Handling HTTP GET Request
+└─ wifi.py       - # Handling connection to WiFi
 ```
 
 <!--
