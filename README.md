@@ -212,7 +212,7 @@ env.py           - # Containing environment variables
 env.py.example   - # Example for environment variables
 lib/*            - # Library files
 ├─ __init.py__   - # Init file to allow importing from lib
-├─ http.py       - # Handling HTTP GET Request
+├─ mqtt.py       - # Library for creating an MQTTClient
 └─ wifi.py       - # Handling connection to WiFi
 pymakr.conf      - # Pymakr configuration file
 ```
