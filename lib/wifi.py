@@ -30,7 +30,7 @@ def wifi_connect(ssid, password):
 
     # Check so the ip is not 0.0.0.0
     if ip is '0.0.0.0':
-        raise Exception('ip = 0.0.0.0 - Not connected to WiFi. Check that you have a 2.4 GHz WiFi and correct credentials in env.json')
+        raise Exception('ip = 0.0.0.0 - Not connected to WiFi. Check that you have a 2.4 GHz WiFi and correct credentials in env.py')
     
     print('Connected on {}\n'.format(ip))
     return ip 
