@@ -31,6 +31,6 @@ while True:
                 temperature, humidity, int(moisturePercent)
             )
         )
-    except:
-        print('An exception occured.')
+    except Exception as err:
+        print('An exception occured.' + str(err))
         continue
