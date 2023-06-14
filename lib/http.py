@@ -1,6 +1,6 @@
 def http_get_request(url):
     from utime import sleep
-    import socket # Used by HTML get request
+    import usocket as socket # Used by HTML get request
 
     # Connecting to the host specified by the URL
     _, _, host, path = url.split('/', 3)        # Separate URL request
