@@ -1,7 +1,8 @@
-def wifi_connect(ssid, password):
-    from utime import sleep
-    import network
+import network
+import env
+from utime import sleep
 
+def wifi_connect():
     # Put modem on Station mode
     wlan = network.WLAN(network.STA_IF)
 
@@ -16,7 +17,7 @@ def wifi_connect(ssid, password):
 
         # set power mode to get WiFi power-saving off (if needed)
         wlan.config(pm = 0xa11140)
-        wlan.connect(ssid, password)  # Your WiFi Credential
+        wlan.connect(env.WIFI_SSID, env.WIFI_PASSWORD)  # Your WiFi Credential
 
         # Check if it is connected otherwise wait
         print('Waiting for connection...', end='')
