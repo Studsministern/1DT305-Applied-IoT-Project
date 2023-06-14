@@ -140,7 +140,7 @@ All code for this project is availible in [the GitHub repository you are current
 4. In the field which says `Provide repository URL or pick a repository source.`, copy and paste `https://github.com/Studsministern/1DT305-Applied-IoT-Project`. Press <kbd>ENTER</kbd>.
 5. Navigate to where you want the folder with code to be cloned to. Press <kbd>Select as Repository Destination</kbd>.
 6. When it has finished cloding, a window saying "Would you like to open the cloned repository, or add it to the current workspace?" will show up. Press <kbd>Open</kbd>.
-7. Create a file called `env.json` and copy the contents of `env.json.example` into it. Then change the `SSID` and `PASSWORD` values to your WiFi credentials. 
+7. Create a file called `env.json` and copy the contents of `env.json.example` into it. Then change the `SSID` and `PASSWORD` values to your WiFi credentials.
 
 You have now cloned the repository! Make sure the RP2 is connected to the computer. Upload the code to the RP2 by following these steps:
 
@@ -208,7 +208,7 @@ The file structure is:
 ```graphql
 boot.py          - # Runs on startup
 main.py          - # Runs when boot is completed
-pymakr.conf      - # Micropython configuration file
+pymakr.conf      - # Pymakr configuration file
 env.json         - # Containing environment variables
 env.json.example - # Example for environment variables
 lib/*            - # Library files
