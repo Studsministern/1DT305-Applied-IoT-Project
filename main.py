@@ -9,6 +9,9 @@ dht11 = DHT11(Pin(27))  # DHT11 Constructor with GP27 pin
 # HTTP request
 try:
     http_get_request('http://detectportal.firefox.com/')
+except OSError as err:
+    print(err)
+    raise OSError('There may be something wrong with your WiFi connection. Check that you have a 2.4 GHz WiFi and correct credentials in env.json')
 except Exception as err:
     raise err
 

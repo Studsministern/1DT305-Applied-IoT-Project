@@ -1,4 +1,4 @@
-def http_get_request(url = 'http://detectportal.firefox.com/'):
+def http_get_request(url):
     from utime import sleep
     import socket # Used by HTML get request
 
