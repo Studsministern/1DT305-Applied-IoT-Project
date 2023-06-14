@@ -2,7 +2,17 @@ from dht import DHT11
 from machine import ADC, Pin
 import utime as time
 import env
+from lib.wifi import wifi_connect
 from lib.mqtt import MQTTClient
+
+
+
+
+### WiFi ###
+try:
+    ip = wifi_connect()
+except KeyboardInterrupt:
+    print('Keyboard interrupt')
 
 
 
