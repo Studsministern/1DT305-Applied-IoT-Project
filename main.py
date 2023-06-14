@@ -11,7 +11,7 @@ try:
     http_get_request('http://detectportal.firefox.com/')
 except OSError as err:
     print(err)
-    raise OSError('There may be something wrong with your WiFi connection. Check that you have a 2.4 GHz WiFi and correct credentials in env.json')
+    raise OSError('There may be something wrong with your WiFi connection. Check that you have a 2.4 GHz WiFi and correct credentials in env.py')
 except Exception as err:
     raise err
 

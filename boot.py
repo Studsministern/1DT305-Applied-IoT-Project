@@ -1,9 +1,9 @@
 # boot.py -- run on boot-up
-from env import wifi as env
+import env
 from lib.wifi import wifi_connect
 
 # WiFi Connection
 try:
-    ip = wifi_connect(env.SSID, env.PASSWORD)
+    ip = wifi_connect(env.WIFI_SSID, env.WIFI_PASSWORD)
 except KeyboardInterrupt:
     print('Keyboard interrupt')
