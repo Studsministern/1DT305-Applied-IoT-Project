@@ -31,6 +31,8 @@ def wifi_connect():
 
     # Check so the ip is not 0.0.0.0
     if ip is '0.0.0.0':
+        wlan.disconnect() # Disconnect if the connection is to the wrong WiFi
+        wlan = None       # Cleanup
         raise Exception('ip = 0.0.0.0 - Not connected to WiFi. Check that you have a 2.4 GHz WiFi and correct credentials in env.py')
     
     print('Connected on {}\n'.format(ip))
