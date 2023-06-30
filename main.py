@@ -19,17 +19,16 @@ except KeyboardInterrupt:
 ### MQTT ###
 # Use the MQTT protocol to connect to Adafruit IO
 print(f'Begin connection with MQTT Broker :: {env.MQTT_BROKER}')
-mqttClient = MQTTClient(env.MQTT_CLIENT_ID, env.MQTT_BROKER, env.MQTT_PORT, env.MQTT_USERNAME, env.MQTT_ACCESS_KEY)
+mqttClient = MQTTClient(client_id=env.MQTT_CLIENT_ID, server=env.MQTT_BROKER, port=env.MQTT_PORT, user=env.MQTT_USERNAME, password=env.MQTT_ACCESS_KEY, keepalive=60)
 mqttClient.connect()
 print(f'Connected to MQTT Broker :: {env.MQTT_BROKER}')
 
 # Function to publish data to Adafruit IO MQTT server
-def mqtt_publish(data):
-    global last_publish
-
-    print('Publishing: {0} to {1} ... '.format(data, env.MQTT_FEED), end='')
+def mqtt_publish(feed_ending, data):
+    full_topic = env.MQTT_FEED + feed_ending
+    print('Publishing: {0} to {1} ... '.format(data, full_topic), end='')
     try:
-        mqttClient.publish(topic=env.MQTT_FEED, msg=str(data))
+        mqttClient.publish(topic=full_topic, msg=str(data))
         print('DONE')
     except Exception as e:
         print('FAILED', e)
@@ -46,10 +45,11 @@ dht11 = DHT11(Pin(27))  # DHT11 Constructor with GP27 pin
 try:
     while True:
         time.sleep(env.MQTT_PUBLISH_INTERVAL)
-
         try:
+            # TODO: Maybe disconnect WiFi in 'finally'
+
             # Measuring soil moisture
-            moisturePercent = 0 #100 - (soil_moisture_sensor.read_u16() / 65535 * 100)
+            moisturePercent = 100 - (soil_moisture_sensor.read_u16() / 65535 * 100)
             
             # Measuring air temperature and humidity
             dht11.measure()
@@ -65,7 +65,9 @@ try:
             )
         )
 
-        mqtt_publish(temperature)
+        mqtt_publish('.dht11-temperature', temperature)
+        mqtt_publish('.dht11-humidity', humidity)
+        mqtt_publish('.fc28-humidity', moisturePercent)
 finally: # Disconnect and clean up if an exception is thrown when publishing
     mqttClient.disconnect()
     mqttClient = None
