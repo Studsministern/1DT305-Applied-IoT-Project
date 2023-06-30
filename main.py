@@ -7,6 +7,18 @@ from lib.mqtt import MQTTClient
 
 
 
+### SENSOR SETUP ###
+soil_moisture_sensor = ADC(Pin(26)) # Soil moisture sensor with ADC0 pin (GP26)
+dht11 = DHT11(Pin(27))  # DHT11 Constructor with GP27 pin
+led = Pin("LED", Pin.OUT)
+
+def led_blink_once():
+    led.on()
+    time.sleep(0.25)
+    led.off()
+    time.sleep(0.25)
+
+
 
 ### WiFi ###
 try:
@@ -30,14 +42,9 @@ def mqtt_publish(feed_ending, data):
     try:
         mqttClient.publish(topic=full_topic, msg=str(data))
         print('DONE')
+        led_blink_once()
     except Exception as e:
         print('FAILED', e)
-
-
-
-### SENSOR SETUP ###
-soil_moisture_sensor = ADC(Pin(26)) # Soil moisture sensor with ADC0 pin (GP26)
-dht11 = DHT11(Pin(27))  # DHT11 Constructor with GP27 pin
 
 
 
