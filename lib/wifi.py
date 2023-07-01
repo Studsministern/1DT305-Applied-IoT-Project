@@ -40,3 +40,9 @@ def wifi_is_connected():
         return True
     else:
         return False
+    
+def wifi_disconnect():
+    wlan = network.WLAN(network.STA_IF)
+    wlan.disconnect()
+    wlan = None
+    print('Disconnected from WiFi\n')

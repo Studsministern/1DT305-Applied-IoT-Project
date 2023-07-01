@@ -2,7 +2,7 @@ from dht import DHT11
 from machine import ADC, Pin
 import utime as time
 import env
-from lib.wifi import wifi_connect, wifi_is_connected
+from lib.wifi import wifi_connect, wifi_is_connected, wifi_disconnect
 from lib.mqtt import MQTTClient
 
 
@@ -45,6 +45,7 @@ def measure_fc28():
 
 
 ### MQTT SETUP ###
+mqttClient = None
 # Function to publish data to Adafruit IO MQTT server
 def mqtt_publish(mqttClient, feed_ending, data):
     full_topic = env.MQTT_FEED + feed_ending
@@ -58,55 +59,74 @@ def mqtt_publish(mqttClient, feed_ending, data):
 
 
 
+### WIFI AND MQTT DISCONNECTING ###
+def disconnect_all(mqttClient):
+    soil_moisture_power.off() # Making sure the soil moisture sensor does not stay on
+    print()
+
+    # Disconnecting the MQTT client
+    try:
+        mqttClient.disconnect()
+        print('Disconnected from Adafruit IO')
+        mqttClient = None
+        print('MQTTClient cleaned up')
+    except NameError as e:
+        print('The mqttClient was not connected when trying to disconnect')
+
+    wifi_disconnect()
+
+
+
 ### MAIN PROGRAM ###
-mqttClient = None
 try:
     while True:
         try:
             ### Connecting to WiFi and MQTTClient ###
-            for i in range(0, 3):
-                led_blink_once(0.1)
             wifi_connect()
+
+            # Blink when the WiFi is connected
+            for i in range(0, 3):
+                led_blink_once(0.05)
+            
             # Use the MQTT protocol to connect to Adafruit IO
             print(f'Begin connection with MQTT Broker :: {env.MQTT_BROKER}')
-            mqttClient = MQTTClient(client_id=env.MQTT_CLIENT_ID, server=env.MQTT_BROKER, port=env.MQTT_PORT, user=env.MQTT_USERNAME, password=env.MQTT_ACCESS_KEY, keepalive=60)
+            mqttClient = MQTTClient(client_id=env.MQTT_CLIENT_ID, server=env.MQTT_BROKER, port=env.MQTT_PORT, user=env.MQTT_USERNAME, password=env.MQTT_ACCESS_KEY)
             mqttClient.connect()
-            print(f'Connected to MQTT Broker :: {env.MQTT_BROKER}')
-            led.off()
+            print(f'Connected to MQTT Broker :: {env.MQTT_BROKER}\n')
             
-            ### MAIN LOOP ###
-            while True:
-                time.sleep(env.MQTT_PUBLISH_INTERVAL)
-                temperature, humidity = measure_dht11()
-                moisturePercent = measure_fc28()
+            # Blink when connected to the MQTT Broker
+            for i in range(0, 3):
+                led_blink_once(0.05)
+            
+            ### MEASURING AND PUBLISHING ###
+                
+            temperature, humidity = measure_dht11()
+            moisturePercent = measure_fc28()
 
-                print(
-                    'Temperature is {} degrees Celsius. Humidity is {}%RH. Soil moisture is {}%'.format(
-                        temperature, humidity, int(moisturePercent)
-                    )
+            print(
+                'Temperature is {} degrees Celsius. Humidity is {}%RH. Soil moisture is {}%'.format(
+                    temperature, humidity, int(moisturePercent)
                 )
+            )
 
-                if wifi_is_connected():
-                    mqtt_publish(mqttClient, '.dht11-temperature', temperature)
-                    mqtt_publish(mqttClient, '.dht11-humidity', humidity)
-                    mqtt_publish(mqttClient, '.fc28-humidity', moisturePercent)
-                else:
-                    print(f'WiFi not connected when publishing. Connecting again.')
-                    break
+            if wifi_is_connected():
+                mqtt_publish(mqttClient, '.dht11-temperature', temperature)
+                mqtt_publish(mqttClient, '.dht11-humidity', humidity)
+                mqtt_publish(mqttClient, '.fc28-humidity', moisturePercent)
+            else:
+                print(f'WiFi not connected when publishing. Connecting again.')
+                time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
+                continue
+
+            disconnect_all(mqttClient)
+            print(f'Going to sleep for {env.MQTT_PUBLISH_INTERVAL} seconds ...')
+            time.sleep(env.MQTT_PUBLISH_INTERVAL)
         except KeyboardInterrupt:
             print('Keyboard interrupt')
             break
         except Exception as e:
             print(f'Did not manage to connect to broker. Trying again.')
-        time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
+
 finally:
     # Disconnect and clean up if an exception is thrown when publishing
-    soil_moisture_power.off() # Making sure the soil moisture sensor does not stay on
-    
-    # mqttClient may not have gotten a value, if something has gone very wrong
-    try:
-        mqttClient.disconnect()
-        mqttClient = None
-        print('Disconnected from Adafruit IO')
-    except NameError as e:
-        print('The mqttClient didn\'t manage to connect before something went wrong.')
+    disconnect_all(mqttClient)
