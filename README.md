@@ -19,6 +19,8 @@ The goal of this project is being able to visualize and predict the soil humidit
 - Creating dashboards
 - _...and much more!_
 
+In total, it should take about 3-4 hours to complete the project if this tutorial is followed.
+
 <!--
 Give a short and brief overview of what your project is about.
 What needs to be included:
@@ -26,7 +28,7 @@ What needs to be included:
 - [ ] Title
 - [x] Your name and student credentials (xx666x)
 - [x] Short project overview
-- [ ] How much time it might take to do (approximation)
+- [x] How much time it might take to do (approximation)
 -->
 
 <!--
@@ -46,25 +48,28 @@ Describe why you have chosen to build this specific device. What purpose does it
 
 ### Materials
 
-<!--
-The materials used in this project, along with costs (in SEK) and links to a Swedish reseller, are the following:
+The materials used in this project are shown below. In addition, costs (in SEK), links to the products from the Swedish reseller Electrokit, and images are also shown in the table:
 
-| Material             | Cost              | Link |
-| -------------------- | ----------------- |      |
-| Raspberry Pi Pico WH |                   |      |
-|                      |                   |      |
+| Material                               | Cost    | Link                                                                                          | Image |
+| -------------------------------------- | ------- | --------------------------------------------------------------------------------------------- | ----- |
+| Raspberry Pi Pico WH                   | 109 SEK | [here](https://www.electrokit.com/produkt/raspberry-pi-pico-wh/)                              |       |
+| DHT11 Temperature & Humidity Sensor    | 49 SEK  | [here](https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/)           |       |
+| FC-28 Soil Moisture Sensor             | 29 SEK  | [here](https://www.electrokit.com/produkt/jordfuktighetssensor/)                              |       |
+| Breadboard (a smaller size works fine) | 69 SEK  | [here](https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/)                    |       |
+| Cables                                 | 39 SEK  | [here](https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/) |       |
 
-The Raspberry Pi Pico W will henceforth be called the RP2, which is a common notation for a Raspberry Pi with a 2040 chip.
--->
+Some comments about the materials used:
+- **Raspberry Pi**: The Raspberry Pi Pico W will henceforth be called the RP2, which is a common notation for a Raspberry Pi Pico with a 2040 chip.
+- **DHT11** and **FC-28**: A more detailed explanation of these sensors are included in sections [DHT11](#dht11-temperature--humidity-sensor) and [FC-28](#fc-28-soil-moisture-sensor). More detail about how they are used is in the section [Putting everything together](#putting-everything-together)".
+- **Breadboard**: Any breadboard big enough for the components is fine. The one linked is simply the one I used.
+- **Cables**: The absolute minimum of cables is six cables with a male-male connection, but I recommend at least 8. Two female-female cables were included when buying the FC-28 sensor, but another soil moisture sensor may require buying your own female-female cables. 
 
 <!--
 > Explain all material that is needed. All sensors, where you bought them and their specifications. Please also provide pictures of what you have bought and what you are using.
 >
 > - [ ] List of material
-> - [ ] What the different things (sensors, wires, controllers) do - short specifications
-> - [ ] Where you bought them and how much they cost
->
-> Example: In this project I have chosen to work with the Pycom LoPy4 device as seen in Fig. 1, it's a neat little device programmed by MicroPython and has several bands of connectivity. The device has many digital and analog input and outputs and is well suited for an IoT project.
+> - [x] What the different things (sensors, wires, controllers) do - short specifications
+> - [x] Where you bought them and how much they cost
 >
 > ![LoPy!](https://pycom.io/wp-content/uploads/2018/08/lopySide-1.png =360x)
 > Fig. 1. LoPy4 with headers. Pycom.io
@@ -73,9 +78,9 @@ The Raspberry Pi Pico W will henceforth be called the RP2, which is a common not
 
 #### DHT11 Temperature & Humidity Sensor
 
-The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output. The sensor is manufactured by Elegoo can be bought for 49 SEK [here, from electrokit.com](https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/).
+The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output.
 
-Different datasheets showed different recommended voltages, from 3.3 V to 5 V. Testing showed that a V<sub>dd</sub> voltage of 3.3 V works very well. In this project V<sub>dd</sub> is supplied by pin 36 (`3V3(OUT)`) on the RP2. The Elegoo manufactured DHT11 includes a 10 k&Omega; pullup resistor, which means no extra resistor is needed in the circuit. Measurement specifications are included in Table 1, below.
+Datasheets recommended voltages V<sub>dd</sub> from 3.3 V to 5 V to be used as power for the DHT11. Measurement specifications are included in Table 1, below.
 
 <div align="center">
         <h6>
@@ -89,20 +94,24 @@ Different datasheets showed different recommended voltages, from 3.3 V to 5 V. T
 
 </div>
 
-<!-- From data sheet: DHT11’s power supply is 3-5.5V DC. When power is supplied to the sensor, do not send any instruction to the sensor in within one second in order to pass the unstable status. One capacitor valued 100nF can be added between VDD and GND for power filtering. -->
+Worth noting is that datasheets recommended not sending any instructions to the sensor in within one second of supplying power to it, to pass the unstable status. This should be considered when implementing the code for the sensor.
 
 &nbsp;
 
 #### FC-28 Soil Moisture Sensor
 
-The FC-28 Soil Moisture Sensor measures the resistance between the two exposed pads. This is converted to a voltage (0 to V<sub>CC</sub>) which can be measured by a microcontroller to determine the moisture of the soil. The sensor can be bought for 29 SEK [here, from electrokit.com](https://www.electrokit.com/produkt/jordfuktighetssensor/).
+The FC-28 Soil Moisture Sensor measures the resistance between the two exposed pads. This is converted to a voltage (0 to V<sub>CC</sub>) which can be measured by a microcontroller to determine the moisture of the soil.
 
-The sensor requires an input voltage V<sub>CC</sub> of 3.3-5 V. In this project V<sub>CC</sub> = 3.3 V by supplying voltage from pin 36 (`3V3(OUT)`) on the RP2. The voltage measured by the sensor is availible on two different pinouts:
+The sensor requires an input voltage V<sub>CC</sub> of 3.3-5 V. The voltage measured by the sensor is availible on two different pinouts:
 
-- The `AO` (Analog output) pinout can be measured to get the sensor's analog voltage of 0 to V<sub>CC</sub>.
-- The `DO` (Digital output) pinout can be measured to get either 0 (`LOW`) or V<sub>CC</sub> (`HIGH`). The sensor has a comparator and a variable resistor on a chip. The voltage measured by the sensor is compared to the voltage produced using the variable resistor, which then sets the `DO` pinout to either `LOW` or `HIGH`.
+- The `AO` (Analog output) pinout can be measured to get the sensor's analog voltage with a value between 0 and V<sub>CC</sub>.
+- The `DO` (Digital output) pinout can be measured to get either 0 (`LOW`) or V<sub>CC</sub> (`HIGH`). The sensor has a chip with a comparator and a variable resistor. The variable resistor can then be rotated to choose when the `DO` pinout should be set to either `LOW` or `HIGH`.
 
-In this project the `AO` pinout is used. The ADC (Analog-Digital Converter) on the RP2 pin converts the 0-3.3 V to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture).
+In the [online user guide](https://www.electrokit.com/uploads/productfile/41015/41015738_-_Soil_Moisture_Sensor.pdf) supplied by Electrokit on the product page, it says:
+
+> "As the probe passes current through the soil, it carries ions that will damage the surface layer over time. As such the sensor should not be operated permanently. Instead it should only be powered up when a measurement is taken and then instantly shut down again."
+
+When using this sensor, the microcontroller should therefore only supply power to it for a few seconds before taking a measurement to not damage it much over time. 
 
 &nbsp;
 
@@ -161,11 +170,41 @@ How is the device programmed. Which IDE are you using. Describe all steps from f
 
 ### Putting everything together
 
+In this project no resistors, transistors, LEDs or other components are needed. Everything required is already accounted for in the materials list.
+
+#### DHT11
+For the DHT11 I chose a voltage of V<sub>dd</sub> = 3.3 V, which is supplied by pin 36 (`3V3(OUT)`) on the RP2. The version of the DHT11 I bought includes a 10 k&Omega; pullup resistor, which means no extra resistor is needed in the circuit.
+
+The connection of the DHT11 to the RP2 can be seen in the circuit diagram further down. The signal pin on the DHT11 is connected to pin 34 (`GP28`) on the RP2.
+
+#### FC-28
+
+For the FC-28 I also chose a supply voltage of V<sub>CC</sub> = 3.3 V. However, I don't use the `3V3(OUT)` pin for this purpose. As mentioned in the [materials section for the FC-28](#fc-28-soil-moisture-sensor), keeping the sensor powered on will damage it. Instead I investigated using a GPIO to supply power to the sensor:
+
+Before testing with a GPIO pin I supplied power with the `3V3(OUT)` pin. By using a multimeter, I was able to measure that the V<sub>CC</sub> pin on the sensor received a current of 2.9 mA. There does not appear to be any official documentation of how much current a GPIO pin is allowed to use. However, discussions in many forums suggest 16 mA to be the absolute max current from any one pin, and that the GPIO pins were designed for a current draw of at least 3 mA.
+
+Therefore I used pin 32 (`GP27`) as a digital output pin to provide the supply voltage to the FC-28. The advantage of this is that the sensor can be kept on for just a few seconds during each measurement, to prolong the lifespan of the FC-28. I chose to keep the sensor active for 2 seconds before taking a measurement. However, I am unsure if this is the best value to use when both the lifetime of the sensor and the accuracy of the measurements is considered.
+
+The measruement is done with pin 31 (`ADC0`, occupying the same pin as `GP26`) on the RP2, which is connected to the `AO` pinout on the FC-28. The ADC (Analog-Digital Converter) in the RP2 converts the 0-3.3 V voltage to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture). The read value is translated to a moisture percentage using the following equation:
+
+```math
+    \text{Moisture percentage} = 100 - \frac{\text{read value} \cdot 100}{65535}    
+```
+
+The percentage is as arbitrary as the read value. However, it is more intuitive to figure out at what moisture percentage the plant needs to be watered at, instead of at what 16-bit number it should be watered. 
+
+#### Circuit diagram
+A circuit diagram created in [Fritzing](https://fritzing.org/) is shown below:
+
+
+
 <!--
 How is all the electronics connected? Describe all the wiring, good if you can show a circuit diagram. Be specific on how to connect everything, and what to think of in terms of resistors, current and voltage. Is this only for a development setup or could it be used in production?
 
 - [ ] Circuit diagram (can be hand drawn)
-- [ ] \*Electrical calculations
+- [x] \*Electrical calculations
+
+Adding Pico W in fritzing: https://datasheets.raspberrypi.com/picow/PicoW-Fritzing.fzpz
 -->
 
 ### Platform
@@ -216,15 +255,6 @@ lib/*            - # Library files
 └─ wifi.py       - # Handling connection to WiFi
 pymakr.conf      - # Pymakr configuration file
 ```
-
-<!--
-lib/* - # Library files
-├─ example - # example file
-├─ lib/folder/* - # example folder in library
-│  ├─ example - # example file in folder
-│  └─ Everything else... - # everything else, should not be needed
-└─ example - # example file
--->
 
 ### Transmitting the data / connectivity
 
