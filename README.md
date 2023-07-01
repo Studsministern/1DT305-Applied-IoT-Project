@@ -6,7 +6,7 @@ My name is Eric Weidow and I am an Electrical Engineering student at LTH in Lund
 
 The project is made up of a Raspberry Pi Pico WH (henceforth called **RP2**) with two sensors to measure air temperature, air humidity, and the soil moisture for an indoor plant. The data is sent via Wi-Fi to a backend, where the data is stored. A dashboard is then used to display the stored data to the user.
 
-> TBD: Storage solution, vizualisation solution, approximate build time.
+> TODO: Write storage solution and vizualisation solution.
 
 The goal of this project is being able to visualize and predict the soil humidity for an indoor plant, and notify the user when the plant should be watered. As both air temperature and air humidity is measured, the goal is that the prediction of when the plant needs to be watered can be improved based on this data. I will use this IoT device as a way for reminding me when to water my plants, as I have always been bad at taking care of them. Additionally, it will give me a great amount of experience with:
 
@@ -48,21 +48,30 @@ Describe why you have chosen to build this specific device. What purpose does it
 
 ### Materials
 
-The materials used in this project are shown below. In addition, costs (in SEK), links to the products from the Swedish reseller Electrokit, and images are also shown in the table:
+The materials used in this project are shown in Table 1, below. In addition, costs (in SEK), links to the products from the Swedish reseller Electrokit, and images are also shown in the table:
 
-| Material                               | Cost    | Link                                                                                          | Image |
-| -------------------------------------- | ------- | --------------------------------------------------------------------------------------------- | ----- |
-| Raspberry Pi Pico WH                   | 109 SEK | [here](https://www.electrokit.com/produkt/raspberry-pi-pico-wh/)                              |       |
-| DHT11 Temperature & Humidity Sensor    | 49 SEK  | [here](https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/)           |       |
-| FC-28 Soil Moisture Sensor             | 29 SEK  | [here](https://www.electrokit.com/produkt/jordfuktighetssensor/)                              |       |
-| Breadboard (a smaller size works fine) | 69 SEK  | [here](https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/)                    |       |
-| Cables                                 | 39 SEK  | [here](https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/) |       |
+<div align="center">
+        <h6>
+            <b>Table 1</b>. The material list. Costs, links to where the products can be bought and images for each product is included below. Data received from the <a href="https://www.electrokit.com/">Electrokit</a> website.
+        </h6>
+
+| Material                               | Cost    | Link                                                                                                     | Image |
+| -------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------- | ----- |
+| Raspberry Pi Pico WH                   | 109 SEK | <a href="https://www.electrokit.com/produkt/raspberry-pi-pico-wh/">here</a>                              |       |
+| DHT11 Temperature & Humidity Sensor    | 49 SEK  | <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">here</a>           |       |
+| FC-28 Soil Moisture Sensor             | 29 SEK  | <a href="https://www.electrokit.com/produkt/jordfuktighetssensor/">here</a>                              |       |
+| Breadboard (a smaller size works fine) | 69 SEK  | <a href="https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/">here</a>                    |       |
+| Cables                                 | 39 SEK  | <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">here</a> |       |
+
+</div>
+
+> TODO: Include images.
 
 Some comments about the materials used:
 - **Raspberry Pi**: The Raspberry Pi Pico W will henceforth be called the RP2, which is a common notation for a Raspberry Pi Pico with a 2040 chip.
 - **DHT11** and **FC-28**: A more detailed explanation of these sensors are included in sections [DHT11](#dht11-temperature--humidity-sensor) and [FC-28](#fc-28-soil-moisture-sensor). More detail about how they are used is in the section [Putting everything together](#putting-everything-together)".
 - **Breadboard**: Any breadboard big enough for the components is fine. The one linked is simply the one I used.
-- **Cables**: The absolute minimum of cables is six cables with a male-male connection, but I recommend at least 8. Two female-female cables were included when buying the FC-28 sensor, but another soil moisture sensor may require buying your own female-female cables. 
+- **Cables**: The absolute minimum of cables is 6 cables with a male-male connection, but I recommend at least 8. 2 female-female cables were included when buying the FC-28 sensor, but another soil moisture sensor may require buying your own female-female cables. 
 
 <!--
 > Explain all material that is needed. All sensors, where you bought them and their specifications. Please also provide pictures of what you have bought and what you are using.
@@ -76,15 +85,17 @@ Some comments about the materials used:
 
 -->
 
+&nbsp;
+
 #### DHT11 Temperature & Humidity Sensor
 
 The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output.
 
-Datasheets recommended voltages V<sub>dd</sub> from 3.3 V to 5 V to be used as power for the DHT11. Measurement specifications are included in Table 1, below.
+Datasheets recommended voltages V<sub>dd</sub> from 3.3 V to 5 V to be used as power for the DHT11. Measurement specifications are included in Table 2, below.
 
 <div align="center">
         <h6>
-            <b>Table 1</b>. RH = Relative Humidity, the amount of vapor present in air expressed as a percentage (%RH) of what is required to achieve saturation at the same temperature. Data received from the <a href="https://www.electrokit.com/uploads/productfile/41015/DHT11.pdf">DHT11 datasheet</a> on the <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">DHT11 product page</a>.
+            <b>Table 2</b>. RH = Relative Humidity, the amount of vapor present in air expressed as a percentage (%RH) of what is required to achieve saturation at the same temperature. Data received from the <a href="https://www.electrokit.com/uploads/productfile/41015/DHT11.pdf">DHT11 datasheet</a> on the <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">DHT11 product page</a>.
         </h6>
 
 | Measurement Range | Humidity Accuracy | Temperature Accuracy | Resolution            |
@@ -168,6 +179,8 @@ How is the device programmed. Which IDE are you using. Describe all steps from f
 
 -->
 
+&nbsp;
+
 ### Putting everything together
 
 In this project no resistors, transistors, LEDs or other components are needed. Everything required is already accounted for in the materials list.
@@ -187,9 +200,13 @@ Therefore I used pin 32 (`GP27`) as a digital output pin to provide the supply v
 
 The measruement is done with pin 31 (`ADC0`, occupying the same pin as `GP26`) on the RP2, which is connected to the `AO` pinout on the FC-28. The ADC (Analog-Digital Converter) in the RP2 converts the 0-3.3 V voltage to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture). The read value is translated to a moisture percentage using the following equation:
 
+&nbsp;
+
 ```math
     \text{Moisture percentage} = 100 - \frac{\text{read value} \cdot 100}{65535}    
 ```
+
+&nbsp;
 
 The percentage is as arbitrary as the read value. However, it is more intuitive to figure out at what moisture percentage the plant needs to be watered at, instead of at what 16-bit number it should be watered. 
 
@@ -206,6 +223,8 @@ How is all the electronics connected? Describe all the wiring, good if you can s
 
 Adding Pico W in fritzing: https://datasheets.raspberrypi.com/picow/PicoW-Fritzing.fzpz
 -->
+
+&nbsp;
 
 ### Platform
 
