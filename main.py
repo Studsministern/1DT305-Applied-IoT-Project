@@ -7,12 +7,14 @@ from lib.mqtt import MQTTClient
 
 
 
-### SENSOR SETUP ###
-soil_moisture_sensor = ADC(Pin(26)) # Soil moisture sensor with ADC0 pin (GP26)
-dht11 = DHT11(Pin(27))  # DHT11 Constructor with GP27 pin
+### SENSORS SETUP ###
 led = Pin("LED", Pin.OUT)
+dht11 = DHT11(Pin(28))                 # DHT11 Constructor with GP28 pin
+soil_moisture_power = Pin(27, Pin.OUT) # GP27 pin used to provide 3.3V VCC to the soil moisture sensor
+soil_moisture_power.off()              # Making sure the soil moisture sensor is off when the program starts
+soil_moisture_sensor = ADC(Pin(26))    # Soil moisture sensor with ADC0 pin (GP26)
 
-# Blinking LED once to show on the board when information is sent
+# Blinking LED once to show on the board when trying to connect to WiFi, or when information is published
 def led_blink_once(half_delay):
     led.on()
     time.sleep(half_delay)
@@ -29,10 +31,13 @@ def measure_dht11():
     except Exception as err:
         print('An exception occured when measuring temperature and humidity.' + str(err))
 
+# Measuring soil moisture
 def measure_fc28():
     try:
-        # Measuring soil moisture
+        soil_moisture_power.on()
+        time.sleep(2) # Keeping the power for the soil moisture sensor on for a few seconds so a correct measurement is received
         moisturePercent = 100 - (soil_moisture_sensor.read_u16() / 65535 * 100)
+        soil_moisture_power.off()
         return moisturePercent
     except Exception as err:
         print('An exception occured when measuring soil moisture.' + str(err))
@@ -53,11 +58,12 @@ def mqtt_publish(mqttClient, feed_ending, data):
 
 
 
-### Connecting to WiFi and MQTTClient ###
+### MAIN PROGRAM ###
 mqttClient = None
 try:
     while True:
         try:
+            ### Connecting to WiFi and MQTTClient ###
             for i in range(0, 3):
                 led_blink_once(0.1)
             wifi_connect()
@@ -92,12 +98,15 @@ try:
             break
         except Exception as e:
             print(f'Did not manage to connect to broker. Trying again.')
-        time.sleep(5)
+        time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
 finally:
     # Disconnect and clean up if an exception is thrown when publishing
+    soil_moisture_power.off() # Making sure the soil moisture sensor does not stay on
+    
+    # mqttClient may not have gotten a value, if something has gone very wrong
     try:
         mqttClient.disconnect()
         mqttClient = None
         print('Disconnected from Adafruit IO')
     except NameError as e:
-        print('The mqttClient didn\'t manage to connect')
+        print('The mqttClient didn\'t manage to connect before something went wrong.')
