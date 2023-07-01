@@ -59,7 +59,7 @@ def mqtt_publish(mqttClient, feed_ending, data):
 
 
 
-### WIFI AND MQTT DISCONNECTING ###
+### DISCONNECTING ###
 def disconnect_all(mqttClient):
     soil_moisture_power.off() # Making sure the soil moisture sensor does not stay on
     print()
@@ -98,8 +98,7 @@ try:
             for i in range(0, 3):
                 led_blink_once(0.05)
             
-            ### MEASURING AND PUBLISHING ###
-                
+            ### Measuring and publishing ###
             temperature, humidity = measure_dht11()
             moisturePercent = measure_fc28()
 
@@ -118,6 +117,7 @@ try:
                 time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
                 continue
 
+            ### Disconnecting and going to sleep ###
             disconnect_all(mqttClient)
             print(f'Going to sleep for {env.MQTT_PUBLISH_INTERVAL} seconds ...')
             time.sleep(env.MQTT_PUBLISH_INTERVAL)
@@ -126,7 +126,6 @@ try:
             break
         except Exception as e:
             print(f'Did not manage to connect to broker. Trying again.')
-
 finally:
     # Disconnect and clean up if an exception is thrown when publishing
     disconnect_all(mqttClient)
