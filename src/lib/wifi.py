@@ -32,14 +32,6 @@ def wifi_connect():
         raise Exception('ip = 0.0.0.0 - Not connected to WiFi. Check that you have a 2.4 GHz WiFi and correct credentials in env.py')
     
     print('Connected on {}\n'.format(ip))
-
-def wifi_is_connected():
-    wlan = network.WLAN(network.STA_IF)
-
-    if wlan.isconnected():
-        return True
-    else:
-        return False
     
 def wifi_disconnect():
     wlan = network.WLAN(network.STA_IF)

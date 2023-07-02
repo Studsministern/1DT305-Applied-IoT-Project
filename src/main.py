@@ -2,7 +2,7 @@ from dht import DHT11
 from machine import ADC, Pin
 import utime as time
 import env
-from lib.wifi import wifi_connect, wifi_is_connected, wifi_disconnect
+from lib.wifi import wifi_connect, wifi_disconnect
 from lib.mqtt import MQTTClient
 
 
