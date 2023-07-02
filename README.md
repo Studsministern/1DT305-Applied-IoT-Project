@@ -1,22 +1,18 @@
-# 1DT305-Applied-IoT-Project
+# Indoor plant monitoring with a RP2
 
 ## Introduction
 
 My name is Eric Weidow and I am an Electrical Engineering student at LTH in Lund, Sweden. As I wanted more practical experience with electronics and programming, I signed up for a summer course in Applied IoT a Linnaeus University (student credentials: ew223me), Sweden, and this project is part of that course.
 
-The project is made up of a Raspberry Pi Pico WH (henceforth called **RP2**) with two sensors to measure air temperature, air humidity, and the soil moisture for an indoor plant. The data is sent via Wi-Fi to a backend, where the data is stored. A dashboard is then used to display the stored data to the user.
-
-> TODO: Write storage solution and vizualisation solution.
+The project is made up of a Raspberry Pi Pico WH (henceforth called **RP2**) with two sensors to measure air temperature, air humidity, and the soil moisture for an indoor plant. The data is sent via Wi-Fi to [AdafruitIO](https://io.adafruit.com/) using the MQTT protocol. The data is stored to my Adafruit account and displayed using a dashboard.
 
 The goal of this project is being able to visualize and predict the soil humidity for an indoor plant, and notify the user when the plant should be watered. As both air temperature and air humidity is measured, the goal is that the prediction of when the plant needs to be watered can be improved based on this data. I will use this IoT device as a way for reminding me when to water my plants, as I have always been bad at taking care of them. Additionally, it will give me a great amount of experience with:
 
-- Microcontrollers
-- Sensors
-- Communication between microcontrollers and sensors
 - IoT concepts and principles
-- Network protocols
-- Cloud storage solutions
-- Creating dashboards
+- Microcontrollers and sensors
+- Connecting to WiFi using code 
+- The MQTT protocol
+- Creating automatic reconnection to WiFi and MQTT brokers
 - _...and much more!_
 
 In total, it should take about 3-4 hours to complete the project if this tutorial is followed.
@@ -25,7 +21,7 @@ In total, it should take about 3-4 hours to complete the project if this tutoria
 Give a short and brief overview of what your project is about.
 What needs to be included:
 
-- [ ] Title
+- [x] Title
 - [x] Your name and student credentials (xx666x)
 - [x] Short project overview
 - [x] How much time it might take to do (approximation)
@@ -61,13 +57,13 @@ The materials used in this project are shown in Table 1, below. In addition, cos
 | DHT11 Temperature & Humidity Sensor    | 49 SEK  | <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">here</a>           | <img src="img/DHT11 Sensor.jpg" width=150>               |
 | FC-28 Soil Moisture Sensor             | 29 SEK  | <a href="https://www.electrokit.com/produkt/jordfuktighetssensor/">here</a>                              | <img src="img/FC-28 Soil Moisture Sensor.jpg" width=150> |
 | Breadboard (a smaller size works fine) | 69 SEK  | <a href="https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/">here</a>                    | <img src="img/Breadboard.jpg" width=150>                 |
-| Wires                                  | 39 SEK  | <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">here</a> | <img src="img/Cables.jpg" width=150>                     |
+| Wires                                  | 39 SEK  | <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">here</a> | <img src="img/Wires.jpg" width=150>                     |
 
 </div>
 
 Some comments about the materials used:
 - **Raspberry Pi**: The Raspberry Pi Pico W will henceforth be called the RP2, which is a common notation for a Raspberry Pi Pico with a 2040 chip.
-- **DHT11** and **FC-28**: A more detailed explanation of these sensors are included in sections [DHT11](#dht11-temperature--humidity-sensor) and [FC-28](#fc-28-soil-moisture-sensor). More detail about how they are used is in the section [Putting everything together](#putting-everything-together)".
+- **DHT11** and **FC-28**: A more detailed explanation of these sensors are included in sections [DHT11](#dht11-temperature--humidity-sensor) and [FC-28](#fc-28-soil-moisture-sensor). More detail about how they are used is in the section [Putting everything together](#putting-everything-together).
 - **Breadboard**: Any breadboard big enough for the components is fine. The one linked is simply the one I used.
 - **Wires**: The absolute minimum of wires is 6 wires with a male-male connection, but I recommend at least 8. 2 female-female wires were included when buying the FC-28 sensor, but another soil moisture sensor may require buying your own female-female wires. 
 
@@ -120,7 +116,7 @@ In the [online user guide](https://www.electrokit.com/uploads/productfile/41015/
 
 > "As the probe passes current through the soil, it carries ions that will damage the surface layer over time. As such the sensor should not be operated permanently. Instead it should only be powered up when a measurement is taken and then instantly shut down again."
 
-When using this sensor, the microcontroller should therefore only supply power to it for a few seconds before taking a measurement to not damage it much over time. 
+When using this sensor, it should therefore only recieve power a few seconds before taking a measurement. At all other times, it should be turned off to not damage it much over time. 
 
 &nbsp;
 
@@ -130,13 +126,15 @@ Make sure to go through every step of this setup so you don't miss downloading o
 
 #### Setting up the IDE
 
-For the IDE I chose VS Code. The steps to setup VS Code for Windows with the correct extension (Pymakr) are the following:
+For the IDE I chose VSCode. The steps to setup VSCode for Windows with the correct extension (Pymakr) are the following:
 
 1. Download and install the LTS release of Node.js [from this link](https://nodejs.org/en).
-2. Download and install VS Code [from this link](https://code.visualstudio.com/Download).
-3. Open VS Code.
+2. Download and install VSCode [from this link](https://code.visualstudio.com/Download).
+3. Open VSCode.
 4. Open the **Extensions manager** from the left panel icon _OR_ press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd>.
 5. Search for the **Pymakr** extension and install it.
+
+&nbsp;
 
 #### Flashing firmware to the RP2
 
@@ -148,12 +146,14 @@ With the IDE installed, the firmware now needs to be flashed to the RP2. Make su
 4. There should be a new drive on your file system named `RPI-RP2`. This is the RP2 storage. Copy the `.uf2` file you downloaded earlier into this storage. **Do not disconnect the device during this installation! If you do you will most likely need to redo the above steps of flashing the firmware.**
 5. Your RP2 should now automatically disconnect and reconnect.
 
+&nbsp;
+
 #### Cloning and uploading the code
 
 All code for this project is availible in [the GitHub repository you are currently in](https://github.com/Studsministern/1DT305-Applied-IoT-Project). To clone the code and upload it to the RP2, you should already have the IDE installed and the firmware flashed to the RP2. Then follow the steps below:
 
 1. Find a place where you want to clone the code to. A folder will automatically be created when cloning code. But create a parent folder if you want to.
-2. In VS Code, press <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>P</kbd> to open the editor commands.
+2. In VSCode, press <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>P</kbd> to open the editor commands.
 3. Write `Git: Clone` and choose `Git: Clone` when it shows up.
 4. In the field which says `Provide repository URL or pick a repository source.`, copy and paste `https://github.com/Studsministern/1DT305-Applied-IoT-Project`. Press <kbd>ENTER</kbd>.
 5. Navigate to where you want the folder with code to be cloned to. Press <kbd>Select as Repository Destination</kbd>.
@@ -162,7 +162,7 @@ All code for this project is availible in [the GitHub repository you are current
 
 You have now cloned the repository! Make sure the RP2 is connected to the computer. Upload the code to the RP2 by following these steps:
 
-1. In VS Code, open **Pymakr** from the left panel icon. Find the device and press `Connect device` (a small lightning symbol) and `Create terminal` (a box with a right arrow).
+1. In VSCode, open **Pymakr** from the left panel icon. Find the device and press `Connect device` (a small lightning symbol) and `Create terminal` (a box with a right arrow).
 2. Find `PYMAKR: PROJECTS` in either **Pymakr** or **Explorer** on the left panel.
 3. Press <kbd>ADD DEVICES</kbd> and select the device.
 4. Press `Sync project to device` (a cloud with an upwards arrow).
@@ -181,22 +181,37 @@ How is the device programmed. Which IDE are you using. Describe all steps from f
 
 ### Putting everything together
 
-In this project no resistors, transistors, LEDs or other components are needed. Everything required is already accounted for in the materials list.
+In this project, only the parts already accounted for in the materials list is required. In Figure 1, below, a circuit diagram is shown. My reasoning for how I connected the DHT11 and FC-28 is also in the sections below.
+
+#### Circuit diagram
+
+<div align="center">
+        <h6>
+            <b>Figure 1</b>. A circuit diagram identical to the real circuit. The circuit contains a Raspberry Pi Pico WH (left), a DHT11 sensor (middle) and a FC-28 sensor (right) connected with wires Diagram made in <a href="https://fritzing.org/">Fritzing</a> version 0.9.3b.
+        </h6>
+
+<img src="img/PicoW Indoor plant monitoring_bb.jpg">
+
+</div>
+
+&nbsp;
 
 #### DHT11
-For the DHT11 I chose a voltage of V<sub>dd</sub> = 3.3 V, which is supplied by pin 36 (`3V3(OUT)`) on the RP2. The version of the DHT11 I bought includes a 10 k&Omega; pullup resistor, which means no extra resistor is needed in the circuit.
+For the DHT11 I chose a voltage of V<sub>dd</sub> = 3.3 V, as recommended by the datasheets, which is supplied by pin 36 (`3V3(OUT)`) on the RP2. The version of the DHT11 I bought includes a 10 k&Omega; pullup resistor, which means no extra resistor will be needed in the circuit.
 
-The connection of the DHT11 to the RP2 can be seen in the circuit diagram further down. The signal pin on the DHT11 is connected to pin 31 (`GP26`) on the RP2.
+The connection of the DHT11 to the RP2 can be seen in the circuit diagram above. The signal pin on the DHT11 is connected to pin 31 (`GP26`) on the RP2 to take measurements.
+
+&nbsp;
 
 #### FC-28
 
-For the FC-28 I also chose a supply voltage of V<sub>CC</sub> = 3.3 V. However, I don't use the `3V3(OUT)` pin for this purpose. As mentioned in the [materials section for the FC-28](#fc-28-soil-moisture-sensor), keeping the sensor powered on will damage it. Instead I investigated using a GPIO to supply power to the sensor:
+For the FC-28 I also chose a supply voltage of V<sub>CC</sub> = 3.3 V. However, I don't use the `3V3(OUT)` pin for this purpose. As mentioned previously, keeping the sensor powered on will damage it. Instead I investigated using a GPIO to supply power to the sensor:
 
 Before testing with a GPIO pin I supplied power with the `3V3(OUT)` pin. By using a multimeter, I was able to measure that the V<sub>CC</sub> pin on the sensor received a current of 2.9 mA. There does not appear to be any official documentation of how much current a GPIO pin is allowed to use. However, discussions in many forums suggest 16 mA to be the absolute max current from any one pin, and that the GPIO pins were designed for a current draw of at least 3 mA.
 
-Therefore I used pin 32 (`GP27`) as a digital output pin to provide the supply voltage to the FC-28. The advantage of this is that the sensor can be kept on for just a few seconds during each measurement, to prolong the lifespan of the FC-28. I chose to keep the sensor active for 2 seconds before taking a measurement. However, I am unsure if this is the best value to use when both the lifetime of the sensor and the accuracy of the measurements is considered.
+Therefore I used pin 32 (`GP27`) as a digital output pin to provide the supply voltage to the FC-28. The advantage of this is that the sensor can be kept on for just a few seconds during each measurement, to prolong the lifespan of the FC-28. I chose to keep the sensor active for 2 seconds before taking a measurement. However, I am unsure if this is the best value to use when both the lifetime of the sensor and the accuracy of the measurements is taken into account.
 
-The measurement is done with pin 34 (`ADC2`, occupying the same pin as `GP28`) on the RP2, which is connected to the `AO` pinout on the FC-28. The ADC (Analog-Digital Converter) in the RP2 converts the 0-3.3 V voltage to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture). The read value is translated to a moisture percentage using the following equation:
+The measurement is done with pin 34 (`ADC2`, occupying the same pin as `GP28`) on the RP2, which is connected to the `AO` pinout on the FC-28, see the circuit diagram above. The ADC (Analog-Digital Converter) in the RP2 converts the 0-3.3 V voltage to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture). The read value is translated to a moisture percentage using the following equation:
 
 &nbsp;
 
@@ -207,18 +222,6 @@ The measurement is done with pin 34 (`ADC2`, occupying the same pin as `GP28`) o
 &nbsp;
 
 The percentage is as arbitrary as the read value. However, it is more intuitive to figure out at what moisture percentage the plant needs to be watered at, instead of at what 16-bit number it should be watered. 
-
-#### Circuit diagram
-A circuit diagram created in [Fritzing](https://fritzing.org/) is shown below:
-
-<div align="center">
-        <h6>
-            <b>Figure 1</b>. A circuit diagram identical to the real circuit. The circuit contains a Raspberry Pi Pico WH (left), a DHT11 sensor (middle) and a FC-28 sensor (right) connected with wires Diagram made in <a href="https://fritzing.org/">Fritzing</a> version 0.9.3b.
-        </h6>
-
-<img src="img/PicoW Indoor plant monitoring_bb.jpg">
-
-</div>
 
 <!--
 How is all the electronics connected? Describe all the wiring, good if you can show a circuit diagram. Be specific on how to connect everything, and what to think of in terms of resistors, current and voltage. Is this only for a development setup or could it be used in production?
@@ -241,6 +244,8 @@ Is your platform based on a local installation or a cloud? Do you plan to use a 
 - [ ] Describe platform in terms of functionality
 - [ ] \*Explain and elaborate what made you choose this platform
 -->
+
+&nbsp;
 
 ### The code
 
@@ -282,6 +287,8 @@ lib/*            - # Library files
 pymakr.conf      - # Pymakr configuration file
 ```
 
+&nbsp;
+
 ### Transmitting the data / connectivity
 
 <!--
@@ -292,6 +299,8 @@ How is the data transmitted to the internet or local server? Describe the packag
 - [ ] Which transport protocols were used (MQTT, webhook, etc ...)
 - [ ] \*Elaborate on the design choices regarding data transmission and wireless protocols. That is how your choices affect the device range and battery consumption.
 -->
+
+&nbsp;
 
 ### Presenting the data
 
@@ -304,7 +313,21 @@ Describe the presentation part. How is the dashboard built? How long is the data
 - [ ] \*Automation/triggers of the data.
 -->
 
+&nbsp;
+
 ### Finalizing the design
+
+#### Final design
+
+#### Conclusion
+The code is very forgiving, as it will continue trying to reconnect to WiFi and MQTT brokers until it succeeds. And because it will automatically disconnect from WiFi and the MQTT broker before going to sleep. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller and the sensors themselves. Because of this, I am very satisfied with how the proejct turned out. I believe this project provides a great starting point for further development.
+
+#### Further improvements
+Some suggestions for improvements are:
+- Connecting all electronics on a small experimental board or custom made PCB, and 3D-print a case for it. The FC-28 sensor probe and the micro-USB cable would then be connected to this case.
+- Using batteries for power.
+- Using subscription to be able to change delays or other settings from a dashboard.
+- Usign the soil moisture information to automatically water plants.
 
 <!--
 Show the final results of your project. Give your final thoughts on how you think the project went. What could have been done in an other way, or even better? Pictures are nice!
@@ -314,9 +337,11 @@ Show the final results of your project. Give your final thoughts on how you thin
 - [ ] \*Video presentation
 -->
 
+&nbsp;
+
 ---
 
-## Useful links:
+## Useful links
 
 - [DHT11 sensor example for RP2](<https://github.com/iot-lnu/applied-iot/tree/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/sensor-examples/P5_DHT_11_DHT_22>)
 - [FC-28 sensor example for Arduino](https://lastminuteengineers.com/soil-moisture-sensor-arduino-tutorial/)
