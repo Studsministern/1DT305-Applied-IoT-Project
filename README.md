@@ -255,14 +255,14 @@ Finally we have the files in the library folder (`lib/*`):
 
 ### Transmitting the data / connectivity
 
-<!--
-How is the data transmitted to the internet or local server? Describe the package format. All the different steps that are needed in getting the data to your end-point. Explain both the code and choice of wireless protocols.
+The data is transmitted using WiFi, as the plant that is monitored will be inside a room with WiFi-connectivity. The MQTT protocol is used to be able to send data to Adafruit IO, and the data itself is sent every 20 minutes. The long interval between publishing information is mainly because of two reasons:
 
-- [ ] How often is the data sent?
-- [ ] Which wireless protocols did you use (WiFi, LoRa, etc ...)?
-- [ ] Which transport protocols were used (MQTT, webhook, etc ...)
-- [ ] \*Elaborate on the design choices regarding data transmission and wireless protocols. That is how your choices affect the device range and battery consumption.
--->
+1. Because the plant takes up the moisture very slowly. As it is, measuring the moisture every 20 minutes is very frequent in comparison to the speed of decrease in moisture.
+2. Because the soil moisture sensor should be powered on as little as possible. Right now it is only used 1/600th of the time.
+
+For this project, WiFi works very well even if the data rate is overkill when only sending three measurements every 20 minutes. If the power consumption would be taken into account, LoRaWAN could be used to provide a much lower power consumption. That would also make it possible to monitor plants out of range of WiFi connectivity. 
+
+> TODO: Webhook used when implementing notifications?
 
 
 
