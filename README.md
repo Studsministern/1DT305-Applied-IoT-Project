@@ -55,28 +55,26 @@ The materials used in this project are shown in Table 1, below. In addition, cos
             <b>Table 1</b>. The material list. Costs, links to where the products can be bought and images for each product is included below. Data received from the <a href="https://www.electrokit.com/">Electrokit</a> website.
         </h6>
 
-| Material                               | Cost    | Link                                                                                                     | Image |
-| -------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------- | ----- |
-| Raspberry Pi Pico WH                   | 109 SEK | <a href="https://www.electrokit.com/produkt/raspberry-pi-pico-wh/">here</a>                              |       |
-| DHT11 Temperature & Humidity Sensor    | 49 SEK  | <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">here</a>           |       |
-| FC-28 Soil Moisture Sensor             | 29 SEK  | <a href="https://www.electrokit.com/produkt/jordfuktighetssensor/">here</a>                              |       |
-| Breadboard (a smaller size works fine) | 69 SEK  | <a href="https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/">here</a>                    |       |
-| Cables                                 | 39 SEK  | <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">here</a> |       |
+| Material                               | Cost    | Link                                                                                                     | Image                                                    |
+| -------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Raspberry Pi Pico WH                   | 109 SEK | <a href="https://www.electrokit.com/produkt/raspberry-pi-pico-wh/">here</a>                              | <img src="img/Raspberry Pi Pico WH.jpg" width=150>       |
+| DHT11 Temperature & Humidity Sensor    | 49 SEK  | <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">here</a>           | <img src="img/DHT11 Sensor.jpg" width=150>               |
+| FC-28 Soil Moisture Sensor             | 29 SEK  | <a href="https://www.electrokit.com/produkt/jordfuktighetssensor/">here</a>                              | <img src="img/FC-28 Soil Moisture Sensor.jpg" width=150> |
+| Breadboard (a smaller size works fine) | 69 SEK  | <a href="https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/">here</a>                    | <img src="img/Breadboard.jpg" width=150>                 |
+| Wires                                  | 39 SEK  | <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">here</a> | <img src="img/Cables.jpg" width=150>                     |
 
 </div>
-
-> TODO: Include images.
 
 Some comments about the materials used:
 - **Raspberry Pi**: The Raspberry Pi Pico W will henceforth be called the RP2, which is a common notation for a Raspberry Pi Pico with a 2040 chip.
 - **DHT11** and **FC-28**: A more detailed explanation of these sensors are included in sections [DHT11](#dht11-temperature--humidity-sensor) and [FC-28](#fc-28-soil-moisture-sensor). More detail about how they are used is in the section [Putting everything together](#putting-everything-together)".
 - **Breadboard**: Any breadboard big enough for the components is fine. The one linked is simply the one I used.
-- **Cables**: The absolute minimum of cables is 6 cables with a male-male connection, but I recommend at least 8. 2 female-female cables were included when buying the FC-28 sensor, but another soil moisture sensor may require buying your own female-female cables. 
+- **Wires**: The absolute minimum of wires is 6 wires with a male-male connection, but I recommend at least 8. 2 female-female wires were included when buying the FC-28 sensor, but another soil moisture sensor may require buying your own female-female wires. 
 
 <!--
 > Explain all material that is needed. All sensors, where you bought them and their specifications. Please also provide pictures of what you have bought and what you are using.
 >
-> - [ ] List of material
+> - [x] List of material
 > - [x] What the different things (sensors, wires, controllers) do - short specifications
 > - [x] Where you bought them and how much they cost
 >
@@ -213,10 +211,19 @@ The percentage is as arbitrary as the read value. However, it is more intuitive 
 #### Circuit diagram
 A circuit diagram created in [Fritzing](https://fritzing.org/) is shown below:
 
+<div align="center">
+        <h6>
+            <b>Figure 1</b>. A circuit diagram identical to the real circuit. The circuit contains a Raspberry Pi Pico WH (left), a DHT11 sensor (middle) and a FC-28 sensor (right) connected with wires Diagram made in <a href="https://fritzing.org/">Fritzing</a> version 0.9.3b.
+        </h6>
+
+<img src="img/PicoW Indoor plant monitoring_bb.jpg">
+
+</div>
+
 <!--
 How is all the electronics connected? Describe all the wiring, good if you can show a circuit diagram. Be specific on how to connect everything, and what to think of in terms of resistors, current and voltage. Is this only for a development setup or could it be used in production?
 
-- [ ] Circuit diagram (can be hand drawn)
+- [x] Circuit diagram (can be hand drawn)
 - [x] \*Electrical calculations
 
 Adding Pico W in fritzing: https://datasheets.raspberrypi.com/picow/PicoW-Fritzing.fzpz
