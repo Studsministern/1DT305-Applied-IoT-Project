@@ -4,51 +4,25 @@
 
 My name is Eric Weidow and I am an Electrical Engineering student at LTH in Lund, Sweden. As I wanted more practical experience with electronics and programming, I signed up for a summer course in Applied IoT a Linnaeus University (student credentials: ew223me), Sweden, and this project is part of that course.
 
-The project is made up of a Raspberry Pi Pico WH (henceforth called **RP2**) with two sensors to measure air temperature, air humidity, and the soil moisture for an indoor plant. The data is sent via Wi-Fi to [AdafruitIO](https://io.adafruit.com/) using the MQTT protocol. The data is stored to my Adafruit account and displayed using a dashboard.
+The project is made up of a Raspberry Pi Pico WH (henceforth called **RP2**) with two sensors to measure air temperature, air humidity, and the soil moisture for an indoor plant. The data is sent via Wi-Fi to [Adafruit IO](https://io.adafruit.com/) (AIO) using the MQTT protocol. The data is stored in the Adafruit IO account and displayed using a dashboard.
 
-The goal of this project is being able to visualize and predict the soil humidity for an indoor plant, and notify the user when the plant should be watered. As both air temperature and air humidity is measured, the goal is that the prediction of when the plant needs to be watered can be improved based on this data. I will use this IoT device as a way for reminding me when to water my plants, as I have always been bad at taking care of them. Additionally, it will give me a great amount of experience with:
-
-- IoT concepts and principles
-- Microcontrollers and sensors
-- Connecting to WiFi using code 
-- The MQTT protocol
-- Creating automatic reconnection to WiFi and MQTT brokers
-- _...and much more!_
+The goal of this project is being able to visualize the soil moisture for an indoor plant, and notify the user when the plant should be watered. As both air temperature and air humidity is measured, I hope to see some connection between, for example, air humidity and how quickly the soil moisture decreases. I will use this IoT device as a way for reminding me when to water my plants, as I have always been bad at taking care of them. Additionally, it will give me a great amount of experience with IoT, microcontrollers, sensors, Python, and much more!
 
 In total, it should take about 3-4 hours to complete the project if this tutorial is followed.
 
-<!--
-Give a short and brief overview of what your project is about.
-What needs to be included:
 
-- [x] Title
-- [x] Your name and student credentials (xx666x)
-- [x] Short project overview
-- [x] How much time it might take to do (approximation)
--->
-
-<!--
-Describe why you have chosen to build this specific device. What purpose does it serve? What do you want to do with the data, and what new insights do you think it will give?
-
-- [x] Why you chose the project
-- [x] What purpose does it serve
-- [x] What insights you think it will give
-
--->
 
 &nbsp;
 
 ## Tutorial
 
-<!-- Please keep the total length of the tutorial below 25k characters. You can include code that is linked to a repository. Keep the code snippets in the tutorial short. -->
-
 ### Materials
 
-The materials used in this project are shown in Table 1, below. In addition, costs (in SEK), links to the products from the Swedish reseller Electrokit, and images are also shown in the table:
+The materials used in this project are shown in Table 1, below:
 
 <div align="center">
     <h6>
-        <b>Table 1</b>. The material list. Costs, links to where the products can be bought and images for each product is included below. Data received from the <a href="https://www.electrokit.com/">Electrokit</a> website.
+        <b>Table 1</b>. The material list. Costs, links images for each product are included. Data received from the <a href="https://www.electrokit.com/">Electrokit</a> website.
     </h6>
 
 | Material                               | Cost    | Link                                                                                                     | Image                                                    |
@@ -57,33 +31,13 @@ The materials used in this project are shown in Table 1, below. In addition, cos
 | DHT11 Temperature & Humidity Sensor    | 49 SEK  | <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">here</a>           | <img src="img/DHT11 Sensor.jpg" width=150>               |
 | FC-28 Soil Moisture Sensor             | 29 SEK  | <a href="https://www.electrokit.com/produkt/jordfuktighetssensor/">here</a>                              | <img src="img/FC-28 Soil Moisture Sensor.jpg" width=150> |
 | Breadboard (a smaller size works fine) | 69 SEK  | <a href="https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/">here</a>                    | <img src="img/Breadboard.jpg" width=150>                 |
-| Wires                                  | 39 SEK  | <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">here</a> | <img src="img/Wires.jpg" width=150>                      |
+| Wires (at least 6 male-male)           | 39 SEK  | <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">here</a> | <img src="img/Wires.jpg" width=150>                      |
 
 </div>
 
-Some comments about the materials used:
-- **Raspberry Pi**: The Raspberry Pi Pico W will henceforth be called the RP2, which is a common notation for a Raspberry Pi Pico with a 2040 chip.
-- **DHT11** and **FC-28**: A more detailed explanation of these sensors are included in sections [DHT11](#dht11-temperature--humidity-sensor) and [FC-28](#fc-28-soil-moisture-sensor). More detail about how they are used is in the section [Putting everything together](#putting-everything-together).
-- **Breadboard**: Any breadboard big enough for the components is fine. The one linked is simply the one I used.
-- **Wires**: The absolute minimum of wires is 6 wires with a male-male connection, but I recommend at least 8. 2 female-female wires were included when buying the FC-28 sensor, but another soil moisture sensor may require buying your own female-female wires. 
-
-<!--
-> Explain all material that is needed. All sensors, where you bought them and their specifications. Please also provide pictures of what you have bought and what you are using.
->
-> - [x] List of material
-> - [x] What the different things (sensors, wires, controllers) do - short specifications
-> - [x] Where you bought them and how much they cost
->
-> ![LoPy!](https://pycom.io/wp-content/uploads/2018/08/lopySide-1.png =360x)
-> Fig. 1. LoPy4 with headers. Pycom.io
-
--->
-
 #### DHT11 Temperature & Humidity Sensor
 
-The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output.
-
-Datasheets recommended voltages V<sub>CC</sub> from 3.3 V to 5 V to be used as power for the DHT11. Measurement specifications are included in Table 2, below.
+The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output, which requires a supply voltage V<sub>CC</sub> of 3.3-5 V. Measurement specifications are included in Table 2, below.
 
 <div align="center">
     <h6>
@@ -97,22 +51,20 @@ Datasheets recommended voltages V<sub>CC</sub> from 3.3 V to 5 V to be used as p
 
 </div>
 
-Worth noting is that datasheets recommended not sending any instructions to the sensor in within one second of supplying power to it, to pass the unstable status. This should be considered when implementing the code for the sensor.
+Datasheets recommended not sending instructions to the sensor in within one second of supplying power to it, to pass the unstable status. If, for example, WiFi and a MQTT Broker is connected before taking measurements, this is not a problem.
 
 #### FC-28 Soil Moisture Sensor
 
-The FC-28 Soil Moisture Sensor measures the resistance between the two exposed pads. This is converted to a voltage (0 to V<sub>CC</sub>) which can be measured by a microcontroller to determine the moisture of the soil.
+The FC-28 Soil Moisture Sensor measures resistance between two exposed pads. The resistance is converted to a voltage between 0 and V<sub>CC</sub>, which can be measured by a microcontroller. The voltage can then be used to determine the moisture of the soil. The sensor requires an input voltage V<sub>CC</sub> of 3.3-5 V. The voltage measured by the sensor is available on two different pinouts:
 
-The sensor requires an input voltage V<sub>CC</sub> of 3.3-5 V. The voltage measured by the sensor is availible on two different pinouts:
+- The `AO` (Analog output) pinout can be measured to get an analog voltage with a value between 0 and V<sub>CC</sub>.
+- The `DO` (Digital output) pinout can be measured to get either 0 (`LOW`) or V<sub>CC</sub> (`HIGH`). The sensor has a chip with a comparator and a variable resistor. By rotating the variable resistor, it can be decided at what analog voltage the `DO` pinout should be set to either `LOW` or `HIGH`.
 
-- The `AO` (Analog output) pinout can be measured to get the sensor's analog voltage with a value between 0 and V<sub>CC</sub>.
-- The `DO` (Digital output) pinout can be measured to get either 0 (`LOW`) or V<sub>CC</sub> (`HIGH`). The sensor has a chip with a comparator and a variable resistor. The variable resistor can then be rotated to choose when the `DO` pinout should be set to either `LOW` or `HIGH`.
-
-In the [online user guide](https://www.electrokit.com/uploads/productfile/41015/41015738_-_Soil_Moisture_Sensor.pdf) supplied by Electrokit on the product page, it says:
+The [online user guide](https://www.electrokit.com/uploads/productfile/41015/41015738_-_Soil_Moisture_Sensor.pdf) supplied by Electrokit on the product page, says:
 
 > "As the probe passes current through the soil, it carries ions that will damage the surface layer over time. As such the sensor should not be operated permanently. Instead it should only be powered up when a measurement is taken and then instantly shut down again."
 
-When using this sensor, it should therefore only recieve power a few seconds before taking a measurement. At all other times, it should be turned off to not damage it much over time. 
+Therefore the sensor should only ever be on for a few seconds before taking measurements. 
 
 
 
@@ -173,24 +125,15 @@ Make sure the RP2 is connected to the computer. To upload the code to the RP2, y
 5. If you want the file contents to automatically update as you do changes, find `PYMAKR: PROJECTS` again. Hold your mouse over the project. Press <kbd></></kbd> (`Start development mode`).
 </details>
 
-<!--
-How is the device programmed. Which IDE are you using. Describe all steps from flashing the firmware, installing plugins in your favorite editor. How flashing is done on MicroPython. The aim is that a beginner should be able to understand.
-
-- [x] Chosen IDE
-- [x] How the code is uploaded
-- [x] Steps that you needed to do for your computer. Installation of Node.js, extra drivers, etc.
-
--->
-
 
 
 &nbsp;
 
 ### Putting everything together
 
-In this project, only the parts already accounted for in the materials list is required. In Figure 1, below, a circuit diagram is shown. My reasoning for how I connected the DHT11 and FC-28 is also in the sections below.
-
 #### Circuit diagram
+
+The circuit diagram shows how the microcontroller is connected to the sensors. All wires are male-male except for the wires between the FC-28 chip and probe, which are female-female wires and were included with the FC-28.
 
 <div align="center">
     <img src="img/PicoW Indoor plant monitoring_bb.jpg">
@@ -200,34 +143,29 @@ In this project, only the parts already accounted for in the materials list is r
 </div>
 
 #### DHT11
-For the DHT11 I chose a voltage of V<sub>CC</sub> = 3.3 V, as recommended by the datasheets, which is supplied by pin 36 (`3V3(OUT)`) on the RP2. The version of the DHT11 I bought includes a 10 k&Omega; pullup resistor, which means no extra resistor will be needed in the circuit.
-
-The connection of the DHT11 to the RP2 can be seen in the circuit diagram above. The signal pin on the DHT11 is connected to pin 31 (`GP26`) on the RP2 to take measurements.
+A voltage of V<sub>CC</sub> = 3.3 V was chosen for powering the DHT11. The power is connected to the middle leg of the DHT11 and is supplied by pin 36 (`3V3(OUT)`) on the RP2. The signal pin (the left leg as seen in the circuit diagram) on the DHT11 is connected to pin 31 (`GP26`) on the RP2 to take measurements. The version of the DHT11 bought from Electrokit has a built-in 10 k&Omega; pullup resistor, so no extra resistors are needed in the circuit.
 
 #### FC-28
 
-For the FC-28 I also chose a supply voltage of V<sub>CC</sub> = 3.3 V. However, I don't use the `3V3(OUT)` pin for this purpose. As mentioned previously, keeping the sensor powered on will damage it. Instead I investigated using a GPIO to supply power to the sensor:
+A supply voltage of V<sub>CC</sub> = 3.3 V was chosen for the FC-28 as well. However, the `3V3(OUT)` pin is not used. As mentioned in the materials section, keeping the sensor powered on will damage it. Instead I investigated using a GPIO to supply power to the sensor:
 
-Before testing with a GPIO pin I supplied power with the `3V3(OUT)` pin. By using a multimeter, I was able to measure that the V<sub>CC</sub> pin on the sensor received a current of 2.9 mA. There does not appear to be any official documentation of how much current a GPIO pin is allowed to use. However, discussions in many forums suggest 16 mA to be the absolute max current from any one pin, and that the GPIO pins were designed for a current draw of at least 3 mA.
+When suppying power with the `3V3(OUT)` pin, I was able to measure that the V<sub>CC</sub> pin on the sensor received a current of 2.9 mA, by using a multimeter. There does not appear to be any official documentation of how much current a GPIO pin is allowed to use. However, discussions in many forums suggest 16 mA to be the absolute max current from any one pin, and that the GPIO pins were designed for a current draw of at least 3 mA.
 
-Therefore I used pin 32 (`GP27`) as a digital output pin to provide the supply voltage to the FC-28. The advantage of this is that the sensor can be kept on for just a few seconds during each measurement, to prolong the lifespan of the FC-28. I chose to keep the sensor active for 2 seconds before taking a measurement. However, I am unsure if this is the best value to use when both the lifetime of the sensor and the accuracy of the measurements is taken into account.
+Therefore I used pin 32 (`GP27`) as a digital output pin to provide the supply voltage to the FC-28. The sensor is only ever kept on for 2 seconds before each measurement. I am unsure if this is the best value to use when taking both the lifetime of the sensor and the accuracy of the measurements into account. But it seems to produce quite stable values.
 
-The measurement is done with pin 34 (`ADC2`, occupying the same pin as `GP28`) on the RP2, which is connected to the `AO` pinout on the FC-28, see the circuit diagram above. The ADC (Analog-Digital Converter) in the RP2 converts the 0-3.3 V voltage to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture). The read value is translated to a moisture percentage using the following equation:
+The measurement is done with pin 34 (`ADC2`), which is connected to the `AO` pinout on the FC-28. The ADC (Analog-Digital Converter) in the RP2 converts the 0-3.3 V voltage to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture). The read value is translated to a moisture percentage using the following equation:
+
+&nbsp;
 
 ```math
-    \text{Moisture percentage} = 100 - \frac{\text{read value} \cdot 100}{65535}    
+\text{Moisture percentage} = 100 - \frac{\text{read value} \cdot 100}{65535}$$
 ```
 
-The percentage is as arbitrary as the read value. However, it is more intuitive to figure out at what moisture percentage the plant needs to be watered at, instead of at what 16-bit number it should be watered. 
+With the code equivalent:
 
-<!--
-How is all the electronics connected? Describe all the wiring, good if you can show a circuit diagram. Be specific on how to connect everything, and what to think of in terms of resistors, current and voltage. Is this only for a development setup or could it be used in production?
-
-- [x] Circuit diagram (can be hand drawn)
-- [x] \*Electrical calculations
-
-Adding Pico W in fritzing: https://datasheets.raspberrypi.com/picow/PicoW-Fritzing.fzpz
--->
+```python
+    moisturePercent = 100 - (soil_moisture_sensor.read_u16() / 65535 * 100)
+```
 
 
 
@@ -235,44 +173,15 @@ Adding Pico W in fritzing: https://datasheets.raspberrypi.com/picow/PicoW-Fritzi
 
 ### Platform
 
-<!--
-Describe your choice of platform. If you have tried different platforms it can be good to provide a comparison.
+The platform chosen for this project is [Adafruit IO](https://io.adafruit.com/) (AIO). It is very simple to setup, and also offers the option of building dashboards. It has a free tier which allows up to 2 devices, 5 groups, 10 feeds, 5 dashboards, a data rate of 30 messages per minute, and also provides 30 days storage. This project only needs 1 group, 3 feeds, 1 dashboard and a very low data rate, which means the free tier works perfect.
 
-Is your platform based on a local installation or a cloud? Do you plan to use a paid subscription or a free? Describe the different alternatives on going forward if you want to scale your idea.
-
-- [ ] Describe platform in terms of functionality
-- [ ] \*Explain and elaborate what made you choose this platform
--->
+To use the platform, it is required to make an account. Then a group with three feeds need to be setup: one feed for the DHT11 temperature values, one for the DHT11 humidity values and one for the FC-28 soil moisture values. Adafruit IO has great [basics tutorials](https://learn.adafruit.com/search?q=Adafruit%2520IO%2520Basics) to help with these steps.
 
 
 
 &nbsp;
 
 ### The code
-
-As mentioned in [Materials](#materials), instructions should not be sent to the DHT11 sensor in within one second of supplying power to it, to pass the unstable status. As my code connects the RP2 to WiFi and the MQTT broker before measuring any values, this is not a problem.
-
-<!--
-Import core functions of your code here, and don't forget to explain what you have done! Do not put too much code here, focus on the core functionalities. Have you done a specific function that does a calculation, or are you using clever function for sending data on two networks? Or, are you checking if the value is reasonable etc. Explain what you have done, including the setup of the network, wireless, libraries and all that is needed to understand.
-
-```python=
-import this as that
-
-def my_cool_function():
-    print('not much here')
-
-s.send(package)
-
-# Explain your code!
-```
-
-https://pypi.org/project/micropython-mpy-env/ used to handle .env variables
-
-Using JSON files in Python: https://www.geeksforgeeks.org/read-json-file-using-python/
-Using 'dict' in Python, reading values based on a key: https://realpython.com/python-dicts/#accessing-dictionary-values
-Using importing in micropython. Importing from files in another folder: https://learn.adafruit.com/micropython-basics-loading-modules/import-code
-Using try-except in Python: https://www.w3schools.com/python/python_try_except.asp
--->
 
 The file structure is:
 
@@ -287,6 +196,58 @@ lib/*            - # Library files
 └─ wifi.py       - # Handling connection to WiFi
 pymakr.conf      - # Pymakr configuration file
 ```
+
+`boot.py` runs on startup, but does not contain any code in this project.
+
+`main.py` is where most of the code is. It contains all setup and measuring of sensors. It uses functions from `lib/wifi.py` to connect to and disconnect from WiFi, and functions from `lib/mqtt.py` to connect to, publish to and disconnect from AIO.
+
+The program itself is in a very long loop, which looks very complicated. However, it is actually quite simple. The first step of the loop is connecting to WiFi and the MQTT Broker (AIO). The onboard LED blinks three times after connecting to WiFi, and three times after connecting to the MQTT broker:
+
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L82-L98
+
+When the WiFi connection and MQTT connection are setup, values are measured from the sensors and printed to the console:
+
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L99-L108
+
+After measuring, the values are published to AIO. The onboard LED will blink once for each successful publishing:
+
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L109-L118
+
+If we have gotten this far without an exception being thrown, we are done with the publishing! We now want the RP2 to sleep (set with `MQTT_PUBLISH_INTERVAL`, default is 20 minutes). But before going to sleep, we disconnect the RP2 from WiFi and AIO, and turn off the soil moisture sensor's power, using the `disconnect_all` function:
+
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L119-L122
+
+After the RP2 wakes up, it will start at the beginning of the loop, and continue publishing every `MQTT_PUBLISH_INTERVAL` seconds! However, if an exception is thrown at any moment, the RP2 will sleeps (set with `WIFI_TRY_RECONNECT_INTERVAL`, default is 1 minute) and then the loop starts over. Because of this, a temporary loss of WiFi will be solved by itself.
+
+The only way of exiting the loop is by a KeyboardInterrupt, then the WiFi and MQTT Broker is disconnected, and the soil moisture sensor's power is turned off, before the RP2 stops the program:
+
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L123-L127
+
+The sleep times `MQTT_PUBLISH_INTERVAL` and `WIFI_TRY_RECONNECT_INTERVAL`, along with all other environment variables, are set in `env.py`. The file has to be created by the user and should contain all variables from the file `env.py.example`, but with the values changed to the corresponding usernames, password, keys, etcetera:
+
+```python
+# WiFi configuration
+WIFI_SSID = 'Your_WiFi_SSID'                                    # WiFi SSID (name)
+WIFI_PASSWORD = 'Your_WiFi_password'                            # WiFi password
+WIFI_TRY_RECONNECT_INTERVAL = 60                                # Time interval before trying to connect to WiFi again
+
+
+# Adafruit IO configuation
+MQTT_BROKER = 'io.adafruit.com'                                 # MQTT broker IP address or DNS
+MQTT_PORT = 1883                                                # Port for MQTT message
+MQTT_USERNAME = 'Your_Username'                                 # Adafruit username
+MQTT_ACCESS_KEY = 'Your_Access_Key'                             # Adafruit access key (something like aio_lotsofnumbersandletters)
+MQTT_CLIENT_ID = ubinascii.hexlify(machine.unique_id())         # The Pico W unique ID
+MQTT_PUBLISH_INTERVAL = 1200                                    # Time interval between measuring and publishing, in seconds. Right now set to 20 minutes
+MQTT_FEED_TEMPERATURE = 'Your_Username/f/Your_Temperature_Feed' # Feed for temperature (something like Your_Username/f/picow.dht11-temperature)
+MQTT_FEED_HUMIDITY = 'Your_Username/f/Your_Humidity_Feed'       # Feed for humidity (something like Your_Username/f/picow.dht11-humidity)
+MQTT_FEED_MOISTURE = 'Your_Username/f/Your_Moisture_Feed'       # Feed for soil moisture (something like Your_Username/f/picow.fc28-moisture)
+```
+
+Finally we have the files in the library folder (`lib/*`):
+- `__init.py__` has to be in the `lib` folder to be able to import `mqtt.py` and `wifi.py` from `main.py`.
+- `mqtt.py` contains functions to create a MQTT connection. It was provided by Linnaeus University from their [Applied IoT GitHub repository](https://github.com/iot-lnu/applied-iot/blob/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/network-examples/N2_WiFi_MQTT_Webhook_Adafruit/lib/mqtt.py).
+- `wifi.py` contains functions that connects to and disconnects from WiFi.
 
 
 
