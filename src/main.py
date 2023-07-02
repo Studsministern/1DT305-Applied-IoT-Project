@@ -125,6 +125,7 @@ try:
             break
         except Exception as e:
             print(f'Did not manage to connect to broker. Trying again.')
+            time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
 finally:
     # Disconnect and clean up if an exception is thrown when publishing
     disconnect_all(mqttClient)
