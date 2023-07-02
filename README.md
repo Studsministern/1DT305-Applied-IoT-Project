@@ -47,9 +47,9 @@ Describe why you have chosen to build this specific device. What purpose does it
 The materials used in this project are shown in Table 1, below. In addition, costs (in SEK), links to the products from the Swedish reseller Electrokit, and images are also shown in the table:
 
 <div align="center">
-        <h6>
-            <b>Table 1</b>. The material list. Costs, links to where the products can be bought and images for each product is included below. Data received from the <a href="https://www.electrokit.com/">Electrokit</a> website.
-        </h6>
+    <h6>
+        <b>Table 1</b>. The material list. Costs, links to where the products can be bought and images for each product is included below. Data received from the <a href="https://www.electrokit.com/">Electrokit</a> website.
+    </h6>
 
 | Material                               | Cost    | Link                                                                                                     | Image                                                    |
 | -------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
@@ -79,8 +79,6 @@ Some comments about the materials used:
 
 -->
 
-&nbsp;
-
 #### DHT11 Temperature & Humidity Sensor
 
 The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output.
@@ -88,9 +86,9 @@ The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a di
 Datasheets recommended voltages V<sub>dd</sub> from 3.3 V to 5 V to be used as power for the DHT11. Measurement specifications are included in Table 2, below.
 
 <div align="center">
-        <h6>
-            <b>Table 2</b>. RH = Relative Humidity, the amount of vapor present in air expressed as a percentage (%RH) of what is required to achieve saturation at the same temperature. Data received from the <a href="https://www.electrokit.com/uploads/productfile/41015/DHT11.pdf">DHT11 datasheet</a> on the <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">DHT11 product page</a>.
-        </h6>
+    <h6>
+        <b>Table 2</b>. RH = Relative Humidity, the amount of vapor present in air expressed as a percentage (%RH) of what is required to achieve saturation at the same temperature. Data received from the <a href="https://www.electrokit.com/uploads/productfile/41015/DHT11.pdf">DHT11 datasheet</a> on the <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">DHT11 product page</a>.
+    </h6>
 
 | Measurement Range | Humidity Accuracy | Temperature Accuracy | Resolution            |
 | ----------------- | ----------------- | -------------------- | --------------------- |
@@ -100,8 +98,6 @@ Datasheets recommended voltages V<sub>dd</sub> from 3.3 V to 5 V to be used as p
 </div>
 
 Worth noting is that datasheets recommended not sending any instructions to the sensor in within one second of supplying power to it, to pass the unstable status. This should be considered when implementing the code for the sensor.
-
-&nbsp;
 
 #### FC-28 Soil Moisture Sensor
 
@@ -118,14 +114,17 @@ In the [online user guide](https://www.electrokit.com/uploads/productfile/41015/
 
 When using this sensor, it should therefore only recieve power a few seconds before taking a measurement. At all other times, it should be turned off to not damage it much over time. 
 
+
+
 &nbsp;
 
 ### Computer setup
 
 Make sure to go through every step of this setup so you don't miss downloading or installing anything.
 
-#### Setting up the IDE
-
+<details>
+    <summary><b>1. Setting up the IDE</b></summary></br>
+    
 For the IDE I chose VSCode. The steps to setup VSCode for Windows with the correct extension (Pymakr) are the following:
 
 1. Download and install the LTS release of Node.js [from this link](https://nodejs.org/en).
@@ -133,24 +132,24 @@ For the IDE I chose VSCode. The steps to setup VSCode for Windows with the corre
 3. Open VSCode.
 4. Open the **Extensions manager** from the left panel icon _OR_ press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd>.
 5. Search for the **Pymakr** extension and install it.
+</details>
 
-&nbsp;
+<details>
+    <summary><b>2. Flashing firmware to the RP2</b></summary></br>
 
-#### Flashing firmware to the RP2
-
-With the IDE installed, the firmware now needs to be flashed to the RP2. Make sure you have your RP2 and the USB-cable for these steps:
+With the IDE installed, the firmware now needs to be flashed to the RP2. Make sure you have your RP2 and cable for these steps:
 
 1. Download the micropython firmware [from this link](https://micropython.org/download/rp2-pico-w/). Make sure that you download the latest firmware from `Releases`, and **not** from `Nightly builds`. You will get a `.uf2` file.
 2. Connect the **micro-usb** end of the cable to the RP2. Firmly hold the back of the USB slot when connecting the cable. There will probably be a small gap even when fully inserted, this is normal.
 3. While holding the <kbd>BOOTSEL</kbd> button on the RP2, connect the **USB type A** end of the cable to your computer. When you have connected the cable you can release the <kbd>BOOTSEL</kbd> button.
 4. There should be a new drive on your file system named `RPI-RP2`. This is the RP2 storage. Copy the `.uf2` file you downloaded earlier into this storage. **Do not disconnect the device during this installation! If you do you will most likely need to redo the above steps of flashing the firmware.**
 5. Your RP2 should now automatically disconnect and reconnect.
+</details>
 
-&nbsp;
-
-#### Cloning and uploading the code
-
-All code for this project is availible in [the GitHub repository you are currently in](https://github.com/Studsministern/1DT305-Applied-IoT-Project). To clone the code and upload it to the RP2, you should already have the IDE installed and the firmware flashed to the RP2. Then follow the steps below:
+<details>
+    <summary><b>3. Cloning and configuring the code from this repository</b></summary></br>
+        
+All code for this project is availible in this GitHub repository. Follow the steps below:
 
 1. Find a place where you want to clone the code to. A folder will automatically be created when cloning code. But create a parent folder if you want to.
 2. In VSCode, press <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd>P</kbd> to open the editor commands.
@@ -160,13 +159,19 @@ All code for this project is availible in [the GitHub repository you are current
 6. When it has finished cloding, a window saying "Would you like to open the cloned repository, or add it to the current workspace?" will show up. Press <kbd>Open</kbd>.
 7. Create a file called `env.py` and copy the contents of `env.py.example` into it. Then change the variable values to your WiFi credentials, MQTT variables, etc.
 
-You have now cloned the repository! Make sure the RP2 is connected to the computer. Upload the code to the RP2 by following these steps:
+</details>
+
+<details>
+    <summary><b>4. Uploading the code to the RP2</b></summary></br>
+    
+Make sure the RP2 is connected to the computer. To upload the code to the RP2, you should already have the IDE installed and the firmware flashed. Then upload the code by following these steps:
 
 1. In VSCode, open **Pymakr** from the left panel icon. Find the device and press `Connect device` (a small lightning symbol) and `Create terminal` (a box with a right arrow).
 2. Find `PYMAKR: PROJECTS` in either **Pymakr** or **Explorer** on the left panel.
 3. Press <kbd>ADD DEVICES</kbd> and select the device.
 4. Press `Sync project to device` (a cloud with an upwards arrow).
 5. If you want the file contents to automatically update as you do changes, find `PYMAKR: PROJECTS` again. Hold your mouse over the project. Press <kbd></></kbd> (`Start development mode`).
+</details>
 
 <!--
 How is the device programmed. Which IDE are you using. Describe all steps from flashing the firmware, installing plugins in your favorite editor. How flashing is done on MicroPython. The aim is that a beginner should be able to understand.
@@ -177,6 +182,8 @@ How is the device programmed. Which IDE are you using. Describe all steps from f
 
 -->
 
+
+
 &nbsp;
 
 ### Putting everything together
@@ -186,22 +193,16 @@ In this project, only the parts already accounted for in the materials list is r
 #### Circuit diagram
 
 <div align="center">
-        <h6>
-            <b>Figure 1</b>. A circuit diagram identical to the real circuit. The circuit contains a Raspberry Pi Pico WH (left), a DHT11 sensor (middle) and a FC-28 sensor (right) connected with wires Diagram made in <a href="https://fritzing.org/">Fritzing</a> version 0.9.3b.
-        </h6>
-
-<img src="img/PicoW Indoor plant monitoring_bb.jpg">
-
+    <img src="img/PicoW Indoor plant monitoring_bb.jpg">
+    <h6>
+        <b>Figure 1</b>. A circuit diagram identical to the real circuit. The circuit contains a Raspberry Pi Pico WH (left), a DHT11 sensor (middle) and a FC-28 sensor (right) connected with wires Diagram made in <a href="https://fritzing.org/">Fritzing</a> version 0.9.3b.
+    </h6>
 </div>
-
-&nbsp;
 
 #### DHT11
 For the DHT11 I chose a voltage of V<sub>dd</sub> = 3.3 V, as recommended by the datasheets, which is supplied by pin 36 (`3V3(OUT)`) on the RP2. The version of the DHT11 I bought includes a 10 k&Omega; pullup resistor, which means no extra resistor will be needed in the circuit.
 
 The connection of the DHT11 to the RP2 can be seen in the circuit diagram above. The signal pin on the DHT11 is connected to pin 31 (`GP26`) on the RP2 to take measurements.
-
-&nbsp;
 
 #### FC-28
 
@@ -213,13 +214,9 @@ Therefore I used pin 32 (`GP27`) as a digital output pin to provide the supply v
 
 The measurement is done with pin 34 (`ADC2`, occupying the same pin as `GP28`) on the RP2, which is connected to the `AO` pinout on the FC-28, see the circuit diagram above. The ADC (Analog-Digital Converter) in the RP2 converts the 0-3.3 V voltage to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture). The read value is translated to a moisture percentage using the following equation:
 
-&nbsp;
-
 ```math
     \text{Moisture percentage} = 100 - \frac{\text{read value} \cdot 100}{65535}    
 ```
-
-&nbsp;
 
 The percentage is as arbitrary as the read value. However, it is more intuitive to figure out at what moisture percentage the plant needs to be watered at, instead of at what 16-bit number it should be watered. 
 
@@ -231,6 +228,8 @@ How is all the electronics connected? Describe all the wiring, good if you can s
 
 Adding Pico W in fritzing: https://datasheets.raspberrypi.com/picow/PicoW-Fritzing.fzpz
 -->
+
+
 
 &nbsp;
 
@@ -244,6 +243,8 @@ Is your platform based on a local installation or a cloud? Do you plan to use a 
 - [ ] Describe platform in terms of functionality
 - [ ] \*Explain and elaborate what made you choose this platform
 -->
+
+
 
 &nbsp;
 
@@ -287,6 +288,8 @@ lib/*            - # Library files
 pymakr.conf      - # Pymakr configuration file
 ```
 
+
+
 &nbsp;
 
 ### Transmitting the data / connectivity
@@ -299,6 +302,8 @@ How is the data transmitted to the internet or local server? Describe the packag
 - [ ] Which transport protocols were used (MQTT, webhook, etc ...)
 - [ ] \*Elaborate on the design choices regarding data transmission and wireless protocols. That is how your choices affect the device range and battery consumption.
 -->
+
+
 
 &nbsp;
 
@@ -313,6 +318,8 @@ Describe the presentation part. How is the dashboard built? How long is the data
 - [ ] \*Automation/triggers of the data.
 -->
 
+
+
 &nbsp;
 
 ### Finalizing the design
@@ -320,14 +327,14 @@ Describe the presentation part. How is the dashboard built? How long is the data
 #### Final design
 
 #### Conclusion
-The code is very forgiving, as it will continue trying to reconnect to WiFi and MQTT brokers until it succeeds. And because it will automatically disconnect from WiFi and the MQTT broker before going to sleep. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller and the sensors themselves. Because of this, I am very satisfied with how the proejct turned out. I believe this project provides a great starting point for further development.
+The code is very forgiving, as it will continue trying to reconnect to WiFi and MQTT brokers until it succeeds, and because it will automatically disconnect from WiFi and the MQTT broker before going to sleep. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller and the sensors themselves. Because of how the code and circuitry turned out, I am very satisfied with this project. It has taught me a lot, and I believe it provides a great starting point for further development.
 
 #### Further improvements
 Some suggestions for improvements are:
 - Connecting all electronics on a small experimental board or custom made PCB, and 3D-print a case for it. The FC-28 sensor probe and the micro-USB cable would then be connected to this case.
 - Using batteries for power.
 - Using subscription to be able to change delays or other settings from a dashboard.
-- Usign the soil moisture information to automatically water plants.
+- Using the soil moisture information to automatically trigger watering of plants.
 
 <!--
 Show the final results of your project. Give your final thoughts on how you think the project went. What could have been done in an other way, or even better? Pictures are nice!
@@ -336,6 +343,8 @@ Show the final results of your project. Give your final thoughts on how you thin
 - [ ] Pictures
 - [ ] \*Video presentation
 -->
+
+
 
 &nbsp;
 
