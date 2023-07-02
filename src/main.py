@@ -111,7 +111,7 @@ try:
             if wifi_is_connected():
                 mqtt_publish(mqttClient, '.dht11-temperature', temperature)
                 mqtt_publish(mqttClient, '.dht11-humidity', humidity)
-                mqtt_publish(mqttClient, '.fc28-humidity', moisturePercent)
+                mqtt_publish(mqttClient, '.fc28-moisture', moisturePercent)
             else:
                 print(f'WiFi not connected when publishing. Connecting again.')
                 time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
