@@ -87,10 +87,10 @@ while True:
             led_blink_once(0.05)
         
         ### Connecting to MQTT broker
-        print(f'Begin connection with MQTT Broker :: {env.MQTT_BROKER}')
-        mqttClient = MQTTClient(client_id=env.MQTT_CLIENT_ID, server=env.MQTT_BROKER, port=env.MQTT_PORT, user=env.MQTT_USERNAME, password=env.MQTT_ACCESS_KEY)
+        print(f'Begin connection with MQTT Broker :: {env.AIO_BROKER}')
+        mqttClient = MQTTClient(client_id=env.AIO_CLIENT_ID, server=env.AIO_BROKER, port=env.AIO_PORT, user=env.AIO_USERNAME, password=env.AIO_ACCESS_KEY)
         mqttClient.connect()
-        print(f'Connected to MQTT Broker :: {env.MQTT_BROKER}\n')
+        print(f'Connected to MQTT Broker :: {env.AIO_BROKER}\n')
         
         # Blink when connected to the MQTT Broker
         for i in range(0, 3):
@@ -108,9 +108,9 @@ while True:
 
         ### Publishing ###
         try:
-            mqtt_publish(mqttClient, env.MQTT_FEED_TEMPERATURE, temperature)
-            mqtt_publish(mqttClient, env.MQTT_FEED_HUMIDITY, humidity)
-            mqtt_publish(mqttClient, env.MQTT_FEED_MOISTURE, moisturePercent)
+            mqtt_publish(mqttClient, env.AIO_FEED_TEMPERATURE, temperature)
+            mqtt_publish(mqttClient, env.AIO_FEED_HUMIDITY, humidity)
+            mqtt_publish(mqttClient, env.AIO_FEED_MOISTURE, moisturePercent)
         except:
             print(f'Something went wrong when publishing. Connecting again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.')
             time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
@@ -118,8 +118,8 @@ while True:
 
         ### Disconnecting and going to sleep ###
         disconnect_all(mqttClient)
-        print(f'Going to sleep for {env.MQTT_PUBLISH_INTERVAL} seconds ...')
-        time.sleep(env.MQTT_PUBLISH_INTERVAL)
+        print(f'Going to sleep for {env.AIO_PUBLISH_INTERVAL} seconds ...')
+        time.sleep(env.AIO_PUBLISH_INTERVAL)
     except KeyboardInterrupt:
         # Disconnect and clean up if the user causes a KeyboardInterrupt
         print('Keyboard interrupt')
