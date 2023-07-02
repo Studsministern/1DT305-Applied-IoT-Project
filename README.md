@@ -2,13 +2,11 @@
 
 ## Introduction
 
-My name is Eric Weidow and I am an Electrical Engineering student at LTH in Lund, Sweden. As I wanted more practical experience with electronics and programming, I signed up for a summer course in Applied IoT a Linnaeus University (student credentials: ew223me), Sweden, and this project is part of that course.
+My name is Eric Weidow, and this project is a part of the Applied IoT summer course at Linnaeus University (student credentials: ew223me), Sweden. My goal with this project is to monitor and indoor plant and send a notification when the plant needs to be watered. It will be used to remind to to water my plants, as I have always been bad at taking care of them. Additionally, it gives me a great amount of expericene with IoT, microcontrollers, sensors, Python, and much more!
 
-The project is made up of a Raspberry Pi Pico WH (henceforth called **RP2**) with two sensors to measure air temperature, air humidity, and the soil moisture for an indoor plant. The data is sent via Wi-Fi to [Adafruit IO](https://io.adafruit.com/) (AIO) using the MQTT protocol. The data is stored in the Adafruit IO account and displayed using a dashboard.
+My implementation uses a Raspberry Pi Pico WH (henceforth called **RP2**) with two sensors to measure air temperature, air humidity, and the soil moisture for an indoor plant. The data is sent via Wi-Fi to [Adafruit IO](https://io.adafruit.com/) (AIO) using the MQTT protocol. The data is stored in the Adafruit IO account and displayed using a dashboard.
 
-The goal of this project is being able to visualize the soil moisture for an indoor plant, and notify the user when the plant should be watered. As both air temperature and air humidity is measured, I hope to see some connection between, for example, air humidity and how quickly the soil moisture decreases. I will use this IoT device as a way for reminding me when to water my plants, as I have always been bad at taking care of them. Additionally, it will give me a great amount of experience with IoT, microcontrollers, sensors, Python, and much more!
-
-In total, it should take about 3-4 hours to complete the project if this tutorial is followed.
+**Approximate build time**: 3-4 hours
 
 
 
@@ -18,20 +16,18 @@ In total, it should take about 3-4 hours to complete the project if this tutoria
 
 ### Materials
 
-The materials used in this project are shown in Table 1, below:
-
 <div align="center">
     <h6>
-        <b>Table 1</b>. The material list. Costs, links images for each product are included. Data received from the <a href="https://www.electrokit.com/">Electrokit</a> website.
+        <b>Table 1</b>. The material list. Clicking the name of the materials links to the product page on the <a href="https://www.electrokit.com/">Electrokit</a> website. Costs and images are taken from the respective product pages.
     </h6>
 
-| Material                               | Cost    | Link                                                                                                     | Image                                                    |
-| -------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| Raspberry Pi Pico WH                   | 109 SEK | <a href="https://www.electrokit.com/produkt/raspberry-pi-pico-wh/">here</a>                              | <img src="img/Raspberry Pi Pico WH.jpg" width=150>       |
-| DHT11 Temperature & Humidity Sensor    | 49 SEK  | <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">here</a>           | <img src="img/DHT11 Sensor.jpg" width=150>               |
-| FC-28 Soil Moisture Sensor             | 29 SEK  | <a href="https://www.electrokit.com/produkt/jordfuktighetssensor/">here</a>                              | <img src="img/FC-28 Soil Moisture Sensor.jpg" width=150> |
-| Breadboard (a smaller size works fine) | 69 SEK  | <a href="https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/">here</a>                    | <img src="img/Breadboard.jpg" width=150>                 |
-| Wires (at least 6 male-male)           | 39 SEK  | <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">here</a> | <img src="img/Wires.jpg" width=150>                      |
+| Material                                                                                                                         | Cost    | Image                                                    |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------- | -------------------------------------------------------- |
+| <a href="https://www.electrokit.com/produkt/raspberry-pi-pico-wh/">Raspberry Pi Pico WH</a>                                      | 109 SEK | <img src="img/Raspberry Pi Pico WH.jpg" width=150>       |
+| <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">DHT11 Temperature & Humidity Sensor</a>    | 49 SEK  | <img src="img/DHT11 Sensor.jpg" width=150>               |
+| <a href="https://www.electrokit.com/produkt/jordfuktighetssensor/">FC-28 Soil Moisture Sensor</a>                                | 29 SEK  | <img src="img/FC-28 Soil Moisture Sensor.jpg" width=150> |
+|  <a href="https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/">Breadboard (a smaller size works fine)</a>         | 69 SEK  | <img src="img/Breadboard.jpg" width=150>                 |
+| <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">Wires (at least 6 male-male)</a> | 39 SEK  | <img src="img/Wires.jpg" width=150>                      |
 
 </div>
 
@@ -51,7 +47,7 @@ The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a di
 
 </div>
 
-Datasheets recommended not sending instructions to the sensor in within one second of supplying power to it, to pass the unstable status. If, for example, WiFi and a MQTT Broker is connected before taking measurements, this is not a problem.
+Datasheets recommend not sending instructions to the sensor in within one second of supplying power to it, to pass the unstable status. If, for example, Wi-Fi and a MQTT Broker is connected before taking measurements, this is not a problem.
 
 #### FC-28 Soil Moisture Sensor
 
@@ -81,26 +77,25 @@ For the IDE I chose VSCode. The steps to setup VSCode for Windows with the corre
 
 1. Download and install the LTS release of Node.js [from this link](https://nodejs.org/en).
 2. Download and install VSCode [from this link](https://code.visualstudio.com/Download).
-3. Open VSCode.
-4. Open the **Extensions manager** from the left panel icon _OR_ press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd>.
-5. Search for the **Pymakr** extension and install it.
+3. Open VSCode and open the **Extensions manager** from the left panel icon.
+4. Search for the **Pymakr** extension and install it.
 </details>
 
 <details>
     <summary><b>2. Flashing firmware to the RP2</b></summary></br>
 
-With the IDE installed, the firmware now needs to be flashed to the RP2. Make sure you have your RP2 and cable for these steps:
+Make sure you have your RP2 and cable for these steps:
 
 1. Download the micropython firmware [from this link](https://micropython.org/download/rp2-pico-w/). Make sure that you download the latest firmware from `Releases`, and **not** from `Nightly builds`. You will get a `.uf2` file.
 2. Connect the **micro-usb** end of the cable to the RP2. Firmly hold the back of the USB slot when connecting the cable. There will probably be a small gap even when fully inserted, this is normal.
-3. While holding the <kbd>BOOTSEL</kbd> button on the RP2, connect the **USB type A** end of the cable to your computer. When you have connected the cable you can release the <kbd>BOOTSEL</kbd> button.
-4. There should be a new drive on your file system named `RPI-RP2`. This is the RP2 storage. Copy the `.uf2` file you downloaded earlier into this storage. **Do not disconnect the device during this installation! If you do you will most likely need to redo the above steps of flashing the firmware.**
+3. Hold the <kbd>BOOTSEL</kbd> button on the RP2 and connect the **USB type A** end of the cable to your computer. When you have connected the cable you can release the <kbd>BOOTSEL</kbd> button.
+4. There should be a new drive on your file system named `RPI-RP2`. This is the RP2 storage. Copy the `.uf2` file you downloaded earlier into this storage. **Do not disconnect the device during this installation! If you do you will most likely need to redo the above steps.**
 5. Your RP2 should now automatically disconnect and reconnect.
 </details>
 
 <details>
     <summary><b>3. Cloning and configuring the code from this repository</b></summary></br>
-        
+
 All code for this project is availible in this GitHub repository. Follow the steps below:
 
 1. Find a place where you want to clone the code to. A folder will automatically be created when cloning code. But create a parent folder if you want to.
@@ -109,20 +104,19 @@ All code for this project is availible in this GitHub repository. Follow the ste
 4. In the field which says `Provide repository URL or pick a repository source.`, copy and paste `https://github.com/Studsministern/1DT305-Applied-IoT-Project`. Press <kbd>ENTER</kbd>.
 5. Navigate to where you want the folder with code to be cloned to. Press <kbd>Select as Repository Destination</kbd>.
 6. When it has finished cloding, a window saying "Would you like to open the cloned repository, or add it to the current workspace?" will show up. Press <kbd>Open</kbd>.
-7. Create a file called `env.py` and copy the contents of `env.py.example` into it. Then change the variable values to your WiFi credentials, MQTT variables, etc.
-
+7. Create a file called `env.py` and copy the contents of `env.py.example` into it. Then change the variable values to your Wi-Fi credentials, MQTT variables, etc.
 </details>
 
 <details>
     <summary><b>4. Uploading the code to the RP2</b></summary></br>
     
-Make sure the RP2 is connected to the computer. To upload the code to the RP2, you should already have the IDE installed and the firmware flashed. Then upload the code by following these steps:
+Make sure the RP2 is connected to the computer. You should have the IDE installed and the firmware flashed. Then upload the code by following these steps:
 
 1. In VSCode, open **Pymakr** from the left panel icon. Find the device and press `Connect device` (a small lightning symbol) and `Create terminal` (a box with a right arrow).
 2. Find `PYMAKR: PROJECTS` in either **Pymakr** or **Explorer** on the left panel.
 3. Press <kbd>ADD DEVICES</kbd> and select the device.
 4. Press `Sync project to device` (a cloud with an upwards arrow).
-5. If you want the file contents to automatically update as you do changes, find `PYMAKR: PROJECTS` again. Hold your mouse over the project. Press <kbd></></kbd> (`Start development mode`).
+5. If you want the file contents to automatically update as you do changes, find `PYMAKR: PROJECTS` again and press <kbd></></kbd> (`Start development mode`). When using development mode, save files with development mode on for the file contents to update on the RP2.
 </details>
 
 
@@ -149,9 +143,9 @@ A voltage of V<sub>CC</sub> = 3.3 V was chosen for powering the DHT11. The power
 
 A supply voltage of V<sub>CC</sub> = 3.3 V was chosen for the FC-28 as well. However, the `3V3(OUT)` pin is not used. As mentioned in the materials section, keeping the sensor powered on will damage it. Instead I investigated using a GPIO to supply power to the sensor:
 
-When suppying power with the `3V3(OUT)` pin, I was able to measure that the V<sub>CC</sub> pin on the sensor received a current of 2.9 mA, by using a multimeter. There does not appear to be any official documentation of how much current a GPIO pin is allowed to use. However, discussions in many forums suggest 16 mA to be the absolute max current from any one pin, and that the GPIO pins were designed for a current draw of at least 3 mA.
+When suppying power with the `3V3(OUT)` pin, it could be measured with a multimeter that the V<sub>CC</sub> pin on the sensor received a current of 2.9 mA. There does not appear to be any official documentation of how much current a GPIO pin is allowed to use. However, discussions in many forums suggest 16 mA to be the absolute max current from any one pin, and that the GPIO pins were designed for a current draw of at least 3 mA.
 
-Therefore I used pin 32 (`GP27`) as a digital output pin to provide the supply voltage to the FC-28. The sensor is only ever kept on for 2 seconds before each measurement. I am unsure if this is the best value to use when taking both the lifetime of the sensor and the accuracy of the measurements into account. But it seems to produce quite stable values.
+Therefore pin 32 (`GP27`) was used as a digital output pin to provide the supply voltage to the FC-28. The sensor is only ever kept on for 2 seconds before each measurement. This may not be the best value to use when taking both the lifetime of the sensor and the accuracy of the measurements into account. But it seemed to produce quite stable values.
 
 The measurement is done with pin 34 (`ADC2`), which is connected to the `AO` pinout on the FC-28. The ADC (Analog-Digital Converter) in the RP2 converts the 0-3.3 V voltage to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture). The read value is translated to a moisture percentage using the following equation:
 
@@ -199,55 +193,54 @@ pymakr.conf      - # Pymakr configuration file
 
 `boot.py` runs on startup, but does not contain any code in this project.
 
-`main.py` is where most of the code is. It contains all setup and measuring of sensors. It uses functions from `lib/wifi.py` to connect to and disconnect from WiFi, and functions from `lib/mqtt.py` to connect to, publish to and disconnect from AIO.
+`main.py` is where most of the code is. It contains all setup and measuring of sensors. It uses functions from `lib/wifi.py` to connect to and disconnect from Wi-Fi, and functions from `lib/mqtt.py` to connect to, publish to and disconnect from Adafruit IO.
 
-The program itself is in a very long loop, which looks very complicated. However, it is actually quite simple. The first step of the loop is connecting to WiFi and the MQTT Broker (AIO). The onboard LED blinks three times after connecting to WiFi, and three times after connecting to the MQTT broker:
+The program itself is in a very long loop, which looks very complicated. However, it is actually quite simple. The first step of the loop is connecting to Wi-Fi and the MQTT broker (Adafruit IO). The onboard LED blinks three times after connecting to Wi-Fi, and three times after connecting to the MQTT broker:
 
 https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L82-L98
 
-When the WiFi connection and MQTT connection are setup, values are measured from the sensors and printed to the console:
+When the Wi-Fi connection and MQTT connection are setup, values are measured from the sensors and printed to the console:
 
 https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L99-L108
 
-After measuring, the values are published to AIO. The onboard LED will blink once for each successful publishing:
+After measuring, the values are published to Adafruit IO. The onboard LED will blink once for each successful publishing:
 
 https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L109-L118
 
-If we have gotten this far without an exception being thrown, we are done with the publishing! We now want the RP2 to sleep (set with `MQTT_PUBLISH_INTERVAL`, default is 20 minutes). But before going to sleep, we disconnect the RP2 from WiFi and AIO, and turn off the soil moisture sensor's power, using the `disconnect_all` function:
+If we have gotten this far without an exception being thrown, we are done with the publishing! We now want the RP2 to sleep (set with `MQTT_PUBLISH_INTERVAL`, default is 20 minutes). But before going to sleep, we disconnect the RP2 from Wi-Fi and Adafruit IO, and turn off the soil moisture sensor's power, using our own `disconnect_all` function:
 
 https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L119-L122
 
-After the RP2 wakes up, it will start at the beginning of the loop, and continue publishing every `MQTT_PUBLISH_INTERVAL` seconds! However, if an exception is thrown at any moment, the RP2 will sleeps (set with `WIFI_TRY_RECONNECT_INTERVAL`, default is 1 minute) and then the loop starts over. Because of this, a temporary loss of WiFi will be solved by itself.
+After the RP2 wakes up, it will start at the beginning of the loop, and continue publishing every `MQTT_PUBLISH_INTERVAL` seconds! However, if an exception is thrown at any moment, the RP2 will sleep (set with `WiFi_TRY_RECONNECT_INTERVAL`, default is 1 minute) and then the loop starts over. Because of this, a temporary loss of Wi-Fi will be solved by itself.
 
-The only way of exiting the loop is by a KeyboardInterrupt, then the WiFi and MQTT Broker is disconnected, and the soil moisture sensor's power is turned off, before the RP2 stops the program:
+The only way of exiting the loop is by a KeyboardInterrupt, then the Wi-Fi and MQTT Broker is disconnected, and the soil moisture sensor's power is turned off, before the RP2 stops the program:
 
 https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L123-L127
 
-The sleep times `MQTT_PUBLISH_INTERVAL` and `WIFI_TRY_RECONNECT_INTERVAL`, along with all other environment variables, are set in `env.py`. The file has to be created by the user and should contain all variables from the file `env.py.example`, but with the values changed to the corresponding usernames, password, keys, etcetera:
+The sleep times `MQTT_PUBLISH_INTERVAL` and `WiFi_TRY_RECONNECT_INTERVAL`, along with all other environment variables, are set in `env.py`. The file has to be created by the user and should contain all variables from the file `env.py.example`, but with the values changed to the corresponding usernames, password, keys, etcetera:
 
 ```python
 # WiFi configuration
-WIFI_SSID = 'Your_WiFi_SSID'                                    # WiFi SSID (name)
-WIFI_PASSWORD = 'Your_WiFi_password'                            # WiFi password
-WIFI_TRY_RECONNECT_INTERVAL = 60                                # Time interval before trying to connect to WiFi again
-
+WIFI_SSID                   = ''
+WIFI_PASSWORD               = ''
+WIFI_TRY_RECONNECT_INTERVAL = 60                                     # Delay before reconnecting after a failed connection, in seconds
 
 # Adafruit IO configuation
-MQTT_BROKER = 'io.adafruit.com'                                 # MQTT broker IP address or DNS
-MQTT_PORT = 1883                                                # Port for MQTT message
-MQTT_USERNAME = 'Your_Username'                                 # Adafruit username
-MQTT_ACCESS_KEY = 'Your_Access_Key'                             # Adafruit access key (something like aio_lotsofnumbersandletters)
-MQTT_CLIENT_ID = ubinascii.hexlify(machine.unique_id())         # The Pico W unique ID
-MQTT_PUBLISH_INTERVAL = 1200                                    # Time interval between measuring and publishing, in seconds. Right now set to 20 minutes
-MQTT_FEED_TEMPERATURE = 'Your_Username/f/Your_Temperature_Feed' # Feed for temperature (something like Your_Username/f/picow.dht11-temperature)
-MQTT_FEED_HUMIDITY = 'Your_Username/f/Your_Humidity_Feed'       # Feed for humidity (something like Your_Username/f/picow.dht11-humidity)
-MQTT_FEED_MOISTURE = 'Your_Username/f/Your_Moisture_Feed'       # Feed for soil moisture (something like Your_Username/f/picow.fc28-moisture)
+AIO_BROKER                  = 'io.adafruit.com'
+AIO_PORT                    = 1883
+AIO_USERNAME                = ''                                     # AIO username
+AIO_ACCESS_KEY              = ''                                     # AIO access key  (Something like: aio_lotsofnumbersandletters)
+AIO_CLIENT_ID               = ubinascii.hexlify(machine.unique_id())
+AIO_PUBLISH_INTERVAL        = 1200                                   # Delay between measurements, in seconds
+AIO_FEED_TEMPERATURE        = ''                                     # Feed for temperature    (Something like: Your_Username/f/picow.dht11-temperature)
+AIO_FEED_HUMIDITY           = ''                                     # Feed for humidity       (Something like: Your_Username/f/picow.dht11-humidity)
+AIO_FEED_MOISTURE           = ''                                     # Feed for soil moisture  (Something like: Your_Username/f/picow.fc28-moisture)
 ```
 
 Finally we have the files in the library folder (`lib/*`):
 - `__init.py__` has to be in the `lib` folder to be able to import `mqtt.py` and `wifi.py` from `main.py`.
-- `mqtt.py` contains functions to create a MQTT connection. It was provided by Linnaeus University from their [Applied IoT GitHub repository](https://github.com/iot-lnu/applied-iot/blob/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/network-examples/N2_WiFi_MQTT_Webhook_Adafruit/lib/mqtt.py).
-- `wifi.py` contains functions that connects to and disconnects from WiFi.
+- `mqtt.py` contains functions to create a MQTT Client, connect to a broker, publish a MQTT message and disconnect. It was provided by Linnaeus University from their [Applied IoT GitHub repository](https://github.com/iot-lnu/applied-iot/blob/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/network-examples/N2_WiFi_MQTT_Webhook_Adafruit/lib/mqtt.py).
+- `wifi.py` contains functions that connects to and disconnects from Wi-Fi.
 
 
 
@@ -255,20 +248,22 @@ Finally we have the files in the library folder (`lib/*`):
 
 ### Transmitting the data / connectivity
 
-The data is transmitted using WiFi, as the plant that is monitored will be inside a room with WiFi-connectivity. The MQTT protocol is used to be able to send data to Adafruit IO, and the data itself is sent every 20 minutes. The long interval between publishing information is mainly because of two reasons:
+The data is transmitted using Wi-Fi, as the plant that is monitored will be inside a room with Wi-Fi-connectivity. The MQTT protocol is used to be able to send data to Adafruit IO, and the data itself is sent every 20 minutes. The long interval between publishing information is mainly because of two reasons:
 
 1. Because the plant takes up the moisture very slowly. As it is, measuring the moisture every 20 minutes is very frequent in comparison to the speed of decrease in moisture.
 2. Because the soil moisture sensor should be powered on as little as possible. Right now it is only used 1/600th of the time.
 
-For this project, WiFi works very well even if the data rate is overkill when only sending three measurements every 20 minutes. If the power consumption would be taken into account, LoRaWAN could be used to provide a much lower power consumption. That would also make it possible to monitor plants out of range of WiFi connectivity. 
-
-> TODO: Webhook used when implementing notifications?
+For this project, Wi-Fi works very well, even if the data rate is overkill when only sending three measurements every 20 minutes. If the power consumption would be taken into account, LoRaWAN could be used to provide a much lower power consumption. That would also make it possible to monitor plants out of range of Wi-Fi connectivity. 
 
 
 
 &nbsp;
 
 ### Presenting the data
+
+The data is stored in Adafruit IO every time data is received, which is every 20 minutes. With the free tier, data is stored for 30 days. This is more than enough for the current extent of this project, as 30 days covers several watering cycles for a plant. If the purpose would change in the future, for example if one would like to analyse data to predict when a plant needs to be watered, another database solution may be needed. But right now the current implementation works very well.
+
+To setup a dashboard and visualize data in Adafruit IO, their [basics tutorials](https://learn.adafruit.com/search?q=Adafruit%2520IO%2520Basics) once again explain the topic very well.
 
 <!--
 Describe the presentation part. How is the dashboard built? How long is the data preserved in the database?
@@ -288,7 +283,9 @@ Describe the presentation part. How is the dashboard built? How long is the data
 #### Final design
 
 #### Conclusion
-The code is very forgiving, as it will continue trying to reconnect to WiFi and MQTT brokers until it succeeds, and because it will automatically disconnect from WiFi and the MQTT broker before going to sleep. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller and the sensors themselves. Because of how the code and circuitry turned out, I am very satisfied with this project. It has taught me a lot, and I believe it provides a great starting point for further development.
+I think I managed to make the code very forgiving, as it will continue trying to reconnect to Wi-Fi and Adafruit IO until it succeeds. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller, the sensors themselves and wires to connect them.
+
+Because of how the code and circuitry turned out, I am very satisfied with this project. It has taught me a lot, and I believe it provides a great starting point for further development.
 
 #### Further improvements
 Some suggestions for improvements are:
