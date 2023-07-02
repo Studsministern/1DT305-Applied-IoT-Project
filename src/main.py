@@ -47,11 +47,10 @@ def measure_fc28():
 ### MQTT SETUP ###
 mqttClient = None
 # Function to publish data to Adafruit IO MQTT server
-def mqtt_publish(mqttClient, feed_ending, data):
-    full_topic = env.MQTT_FEED + feed_ending
-    print('Publishing: {0} to {1} ... '.format(data, full_topic), end='')
+def mqtt_publish(mqttClient, mqtt_feed, data):
+    print('Publishing: {0} to {1} ... '.format(data, mqtt_feed), end='')
     try:
-        mqttClient.publish(topic=full_topic, msg=str(data))
+        mqttClient.publish(topic=mqtt_feed, msg=str(data))
         print('DONE')
         led_blink_once(0.25)
     except Exception as e:
@@ -71,7 +70,7 @@ def disconnect_all(mqttClient):
         mqttClient = None
         print('MQTTClient cleaned up')
     except NameError as e:
-        print('The mqttClient was not connected when trying to disconnect')
+        print('The mqttClient was not connected when trying to disconnect', e)
 
     wifi_disconnect()
 
@@ -109,9 +108,9 @@ try:
             )
 
             if wifi_is_connected():
-                mqtt_publish(mqttClient, '.dht11-temperature', temperature)
-                mqtt_publish(mqttClient, '.dht11-humidity', humidity)
-                mqtt_publish(mqttClient, '.fc28-moisture', moisturePercent)
+                mqtt_publish(mqttClient, env.MQTT_FEED_TEMPERATURE, temperature)
+                mqtt_publish(mqttClient, env.MQTT_FEED_HUMIDITY, humidity)
+                mqtt_publish(mqttClient, env.MQTT_FEED_MOISTURE, moisturePercent)
             else:
                 print(f'WiFi not connected when publishing. Connecting again.')
                 time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
