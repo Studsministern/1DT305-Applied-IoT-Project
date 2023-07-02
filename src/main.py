@@ -80,14 +80,14 @@ def disconnect_all(mqttClient):
 try:
     while True:
         try:
-            ### Connecting to WiFi and MQTTClient ###
+            ### Connecting to WiFi ###
             wifi_connect()
 
             # Blink when the WiFi is connected
             for i in range(0, 3):
                 led_blink_once(0.05)
             
-            # Use the MQTT protocol to connect to Adafruit IO
+            ### Connecting to MQTT broker
             print(f'Begin connection with MQTT Broker :: {env.MQTT_BROKER}')
             mqttClient = MQTTClient(client_id=env.MQTT_CLIENT_ID, server=env.MQTT_BROKER, port=env.MQTT_PORT, user=env.MQTT_USERNAME, password=env.MQTT_ACCESS_KEY)
             mqttClient.connect()
@@ -97,7 +97,7 @@ try:
             for i in range(0, 3):
                 led_blink_once(0.05)
             
-            ### Measuring and publishing ###
+            ### Measuring ###
             temperature, humidity = measure_dht11()
             moisturePercent = measure_fc28()
 
@@ -107,12 +107,13 @@ try:
                 )
             )
 
-            if wifi_is_connected():
+            ### Publishing ###
+            try:
                 mqtt_publish(mqttClient, env.MQTT_FEED_TEMPERATURE, temperature)
                 mqtt_publish(mqttClient, env.MQTT_FEED_HUMIDITY, humidity)
                 mqtt_publish(mqttClient, env.MQTT_FEED_MOISTURE, moisturePercent)
-            else:
-                print(f'WiFi not connected when publishing. Connecting again.')
+            except:
+                print(f'Something went wrong when publishing. Connecting again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.')
                 time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
                 continue
 
@@ -124,7 +125,7 @@ try:
             print('Keyboard interrupt')
             break
         except Exception as e:
-            print(f'Did not manage to connect to broker. Trying again.')
+            print(f'Did not manage to connect to WiFi or broker. Trying again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.')
             time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
 finally:
     # Disconnect and clean up if an exception is thrown when publishing
