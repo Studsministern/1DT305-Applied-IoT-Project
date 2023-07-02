@@ -188,7 +188,7 @@ In this project no resistors, transistors, LEDs or other components are needed. 
 #### DHT11
 For the DHT11 I chose a voltage of V<sub>dd</sub> = 3.3 V, which is supplied by pin 36 (`3V3(OUT)`) on the RP2. The version of the DHT11 I bought includes a 10 k&Omega; pullup resistor, which means no extra resistor is needed in the circuit.
 
-The connection of the DHT11 to the RP2 can be seen in the circuit diagram further down. The signal pin on the DHT11 is connected to pin 34 (`GP28`) on the RP2.
+The connection of the DHT11 to the RP2 can be seen in the circuit diagram further down. The signal pin on the DHT11 is connected to pin 31 (`GP26`) on the RP2.
 
 #### FC-28
 
@@ -198,7 +198,7 @@ Before testing with a GPIO pin I supplied power with the `3V3(OUT)` pin. By usin
 
 Therefore I used pin 32 (`GP27`) as a digital output pin to provide the supply voltage to the FC-28. The advantage of this is that the sensor can be kept on for just a few seconds during each measurement, to prolong the lifespan of the FC-28. I chose to keep the sensor active for 2 seconds before taking a measurement. However, I am unsure if this is the best value to use when both the lifetime of the sensor and the accuracy of the measurements is considered.
 
-The measruement is done with pin 31 (`ADC0`, occupying the same pin as `GP26`) on the RP2, which is connected to the `AO` pinout on the FC-28. The ADC (Analog-Digital Converter) in the RP2 converts the 0-3.3 V voltage to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture). The read value is translated to a moisture percentage using the following equation:
+The measurement is done with pin 34 (`ADC2`, occupying the same pin as `GP28`) on the RP2, which is connected to the `AO` pinout on the FC-28. The ADC (Analog-Digital Converter) in the RP2 converts the 0-3.3 V voltage to a 16-bit number, between 0 and 65535. 0 corresponds to very low resistance (high moisture) and 65535 corresponds to very high resistance (low moisture). The read value is translated to a moisture percentage using the following equation:
 
 &nbsp;
 
@@ -212,8 +212,6 @@ The percentage is as arbitrary as the read value. However, it is more intuitive 
 
 #### Circuit diagram
 A circuit diagram created in [Fritzing](https://fritzing.org/) is shown below:
-
-
 
 <!--
 How is all the electronics connected? Describe all the wiring, good if you can show a circuit diagram. Be specific on how to connect everything, and what to think of in terms of resistors, current and voltage. Is this only for a development setup or could it be used in production?

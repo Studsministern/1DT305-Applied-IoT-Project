@@ -9,10 +9,10 @@ from lib.mqtt import MQTTClient
 
 ### SENSORS SETUP ###
 led = Pin("LED", Pin.OUT)
-dht11 = DHT11(Pin(28))                 # DHT11 Constructor with GP28 pin
+dht11 = DHT11(Pin(26))                 # DHT11 Constructor with GP26 pin
 soil_moisture_power = Pin(27, Pin.OUT) # GP27 pin used to provide 3.3V VCC to the soil moisture sensor
 soil_moisture_power.off()              # Making sure the soil moisture sensor is off when the program starts
-soil_moisture_sensor = ADC(Pin(26))    # Soil moisture sensor with ADC0 pin (GP26)
+soil_moisture_sensor = ADC(Pin(28))    # Soil moisture sensor with ADC2 pin (same pin as GP28)
 
 # Blinking LED once to show on the board when trying to connect to WiFi, or when information is published
 def led_blink_once(half_delay):
