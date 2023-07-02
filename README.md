@@ -57,7 +57,7 @@ The materials used in this project are shown in Table 1, below. In addition, cos
 | DHT11 Temperature & Humidity Sensor    | 49 SEK  | <a href="https://www.electrokit.com/produkt/digital-temperatur-och-fuktsensor-dht11/">here</a>           | <img src="img/DHT11 Sensor.jpg" width=150>               |
 | FC-28 Soil Moisture Sensor             | 29 SEK  | <a href="https://www.electrokit.com/produkt/jordfuktighetssensor/">here</a>                              | <img src="img/FC-28 Soil Moisture Sensor.jpg" width=150> |
 | Breadboard (a smaller size works fine) | 69 SEK  | <a href="https://www.electrokit.com/produkt/kopplingsdack-840-anslutningar/">here</a>                    | <img src="img/Breadboard.jpg" width=150>                 |
-| Wires                                  | 39 SEK  | <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">here</a> | <img src="img/Wires.jpg" width=150>                     |
+| Wires                                  | 39 SEK  | <a href="https://www.electrokit.com/produkt/kopplingstrad-byglar-for-kopplingsdack-mjuka-65st/">here</a> | <img src="img/Wires.jpg" width=150>                      |
 
 </div>
 
@@ -83,7 +83,7 @@ Some comments about the materials used:
 
 The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output.
 
-Datasheets recommended voltages V<sub>dd</sub> from 3.3 V to 5 V to be used as power for the DHT11. Measurement specifications are included in Table 2, below.
+Datasheets recommended voltages V<sub>CC</sub> from 3.3 V to 5 V to be used as power for the DHT11. Measurement specifications are included in Table 2, below.
 
 <div align="center">
     <h6>
@@ -200,7 +200,7 @@ In this project, only the parts already accounted for in the materials list is r
 </div>
 
 #### DHT11
-For the DHT11 I chose a voltage of V<sub>dd</sub> = 3.3 V, as recommended by the datasheets, which is supplied by pin 36 (`3V3(OUT)`) on the RP2. The version of the DHT11 I bought includes a 10 k&Omega; pullup resistor, which means no extra resistor will be needed in the circuit.
+For the DHT11 I chose a voltage of V<sub>CC</sub> = 3.3 V, as recommended by the datasheets, which is supplied by pin 36 (`3V3(OUT)`) on the RP2. The version of the DHT11 I bought includes a 10 k&Omega; pullup resistor, which means no extra resistor will be needed in the circuit.
 
 The connection of the DHT11 to the RP2 can be seen in the circuit diagram above. The signal pin on the DHT11 is connected to pin 31 (`GP26`) on the RP2 to take measurements.
 
