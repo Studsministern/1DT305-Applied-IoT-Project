@@ -77,56 +77,54 @@ def disconnect_all(mqttClient):
 
 
 ### MAIN PROGRAM ###
-try:
-    while True:
-        try:
-            ### Connecting to WiFi ###
-            wifi_connect()
+while True:
+    try:
+        ### Connecting to WiFi ###
+        wifi_connect()
 
-            # Blink when the WiFi is connected
-            for i in range(0, 3):
-                led_blink_once(0.05)
-            
-            ### Connecting to MQTT broker
-            print(f'Begin connection with MQTT Broker :: {env.MQTT_BROKER}')
-            mqttClient = MQTTClient(client_id=env.MQTT_CLIENT_ID, server=env.MQTT_BROKER, port=env.MQTT_PORT, user=env.MQTT_USERNAME, password=env.MQTT_ACCESS_KEY)
-            mqttClient.connect()
-            print(f'Connected to MQTT Broker :: {env.MQTT_BROKER}\n')
-            
-            # Blink when connected to the MQTT Broker
-            for i in range(0, 3):
-                led_blink_once(0.05)
-            
-            ### Measuring ###
-            temperature, humidity = measure_dht11()
-            moisturePercent = measure_fc28()
+        # Blink when the WiFi is connected
+        for i in range(0, 3):
+            led_blink_once(0.05)
+        
+        ### Connecting to MQTT broker
+        print(f'Begin connection with MQTT Broker :: {env.MQTT_BROKER}')
+        mqttClient = MQTTClient(client_id=env.MQTT_CLIENT_ID, server=env.MQTT_BROKER, port=env.MQTT_PORT, user=env.MQTT_USERNAME, password=env.MQTT_ACCESS_KEY)
+        mqttClient.connect()
+        print(f'Connected to MQTT Broker :: {env.MQTT_BROKER}\n')
+        
+        # Blink when connected to the MQTT Broker
+        for i in range(0, 3):
+            led_blink_once(0.05)
+        
+        ### Measuring ###
+        temperature, humidity = measure_dht11()
+        moisturePercent = measure_fc28()
 
-            print(
-                'Temperature is {} degrees Celsius. Humidity is {}%RH. Soil moisture is {}%'.format(
-                    temperature, humidity, int(moisturePercent)
-                )
+        print(
+            'Temperature is {} degrees Celsius. Humidity is {}%RH. Soil moisture is {}%'.format(
+                temperature, humidity, int(moisturePercent)
             )
+        )
 
-            ### Publishing ###
-            try:
-                mqtt_publish(mqttClient, env.MQTT_FEED_TEMPERATURE, temperature)
-                mqtt_publish(mqttClient, env.MQTT_FEED_HUMIDITY, humidity)
-                mqtt_publish(mqttClient, env.MQTT_FEED_MOISTURE, moisturePercent)
-            except:
-                print(f'Something went wrong when publishing. Connecting again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.')
-                time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
-                continue
-
-            ### Disconnecting and going to sleep ###
-            disconnect_all(mqttClient)
-            print(f'Going to sleep for {env.MQTT_PUBLISH_INTERVAL} seconds ...')
-            time.sleep(env.MQTT_PUBLISH_INTERVAL)
-        except KeyboardInterrupt:
-            print('Keyboard interrupt')
-            break
-        except Exception as e:
-            print(f'Did not manage to connect to WiFi or broker. Trying again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.')
+        ### Publishing ###
+        try:
+            mqtt_publish(mqttClient, env.MQTT_FEED_TEMPERATURE, temperature)
+            mqtt_publish(mqttClient, env.MQTT_FEED_HUMIDITY, humidity)
+            mqtt_publish(mqttClient, env.MQTT_FEED_MOISTURE, moisturePercent)
+        except:
+            print(f'Something went wrong when publishing. Connecting again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.')
             time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
-finally:
-    # Disconnect and clean up if an exception is thrown when publishing
-    disconnect_all(mqttClient)
+            continue
+
+        ### Disconnecting and going to sleep ###
+        disconnect_all(mqttClient)
+        print(f'Going to sleep for {env.MQTT_PUBLISH_INTERVAL} seconds ...')
+        time.sleep(env.MQTT_PUBLISH_INTERVAL)
+    except KeyboardInterrupt:
+        # Disconnect and clean up if the user causes a KeyboardInterrupt
+        print('Keyboard interrupt')
+        disconnect_all(mqttClient)
+        break
+    except Exception as e:
+        print(f'Did not manage to connect to WiFi or broker. Trying again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.')
+        time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
