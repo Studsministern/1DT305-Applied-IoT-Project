@@ -31,6 +31,15 @@ My implementation uses a Raspberry Pi Pico WH (henceforth called **RP2**) with t
 
 </div>
 
+#### Raspberry Pi Pico WH Pinout
+
+<div align="center">
+    <img src="img/Raspberry Pi Pico WH Pinout.png" width=600>
+    <h6>
+        <b>Figure 1</b>. The pinout of the Raspberry Pi Pico WH. Image received from <a href="https://datasheets.raspberrypi.com/picow/PicoW-A4-Pinout.pdf">Raspberry Pi's website</a>.
+    </h6>
+</div>
+
 #### DHT11 Temperature & Humidity Sensor
 
 The DHT11 Temperature & Humidity Sensor is a cheap but reliable sensor with a digital signal output, which requires a supply voltage V<sub>CC</sub> of 3.3-5 V. Measurement specifications are included in Table 2, below.
@@ -132,7 +141,7 @@ The circuit diagram shows how the microcontroller is connected to the sensors. A
 <div align="center">
     <img src="img/PicoW Indoor plant monitoring_bb.jpg">
     <h6>
-        <b>Figure 1</b>. A circuit diagram identical to the real circuit. The circuit contains a Raspberry Pi Pico WH (left), a DHT11 sensor (middle) and a FC-28 sensor (right) connected with wires Diagram made in <a href="https://fritzing.org/">Fritzing</a> version 0.9.3b.
+        <b>Figure 2</b>. A circuit diagram identical to the real circuit. The circuit contains a Raspberry Pi Pico WH (left), a DHT11 sensor (middle) and a FC-28 sensor (right) connected with wires Diagram made in <a href="https://fritzing.org/">Fritzing</a> version 0.9.3b.
     </h6>
 </div>
 
@@ -242,6 +251,15 @@ Finally we have the files in the library folder (`lib/*`):
 - `mqtt.py` contains functions to create a MQTT Client, connect to a broker, publish a MQTT message and disconnect. It was provided by Linnaeus University from their [Applied IoT GitHub repository](https://github.com/iot-lnu/applied-iot/blob/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/network-examples/N2_WiFi_MQTT_Webhook_Adafruit/lib/mqtt.py).
 - `wifi.py` contains functions that connects to and disconnects from Wi-Fi.
 
+In the figure below, we see what the terminal output can look like if everything works as intended!
+
+<div align="center">
+    <img src="img/Terminal output.png" width=500>
+    <h6>
+        <b>Figure 3</b>. What is printed to the terminal after one pass through the loop, if everything goes as planned!
+    </h6>
+</div>
+
 
 
 &nbsp;
@@ -263,16 +281,14 @@ For this project, Wi-Fi works very well, even if the data rate is overkill when 
 
 The data is stored in Adafruit IO every time data is received, which is every 20 minutes. With the free tier, data is stored for 30 days. This is more than enough for the current extent of this project, as 30 days covers several watering cycles for a plant. If the purpose would change in the future, for example if one would like to analyse data to predict when a plant needs to be watered, another database solution may be needed. But right now the current implementation works very well.
 
+<div align="center">
+    <img src="img/Dashboard.png" width=600>
+    <h6>
+        <b>Figure 4</b>. The <a href="https://io.adafruit.com/">Adafruit IO</a> dashboard. It contains three line graphs: one for temperature, one for air humidity and one for soil moisture.
+    </h6>
+</div>
+
 To setup a dashboard and visualize data in Adafruit IO, their [basics tutorials](https://learn.adafruit.com/search?q=Adafruit%2520IO%2520Basics) once again explain the topic very well.
-
-<!--
-Describe the presentation part. How is the dashboard built? How long is the data preserved in the database?
-
-- [ ] Provide visual examples on how the dashboard looks. Pictures needed.
-- [ ] How often is data saved in the database.
-- [ ] \*Explain your choice of database.
-- [ ] \*Automation/triggers of the data.
--->
 
 
 
@@ -280,27 +296,25 @@ Describe the presentation part. How is the dashboard built? How long is the data
 
 ### Finalizing the design
 
-#### Final design
+<div align="center">
+    <div>
+        <img src="img/Finished project 1.jpg" height=400>
+        <img src="img/Finished project 3.jpg" height=400>
+    </div>
+    <h6>
+        <b>Figure 5</b>. The finished IoT device!
+    </h6>
+</div>
 
-#### Conclusion
-I think I managed to make the code very forgiving, as it will continue trying to reconnect to Wi-Fi and Adafruit IO until it succeeds. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller, the sensors themselves and wires to connect them.
-
-Because of how the code and circuitry turned out, I am very satisfied with this project. It has taught me a lot, and I believe it provides a great starting point for further development.
+I am very satisfied with this project. It has taught me a lot, and I believe it provides a great starting point for further development. The code is very forgiving, as it will continue trying to reconnect to Wi-Fi and Adafruit IO until it succeeds. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller, the sensors themselves and wires to connect them. There is still a lot of room for improvement, but as a first IoT project it works very well!
 
 #### Further improvements
-Some suggestions for improvements are:
+Some ideas for how to improveme on this project are:
+- Simplifying the code. It works very well but is a bit too complicated. There are some try-catch statements that may be unneccessary, and maybe even some variables that are not needed.
 - Connecting all electronics on a small experimental board or custom made PCB, and 3D-print a case for it. The FC-28 sensor probe and the micro-USB cable would then be connected to this case.
 - Using batteries for power.
 - Using subscription to be able to change delays or other settings from a dashboard.
 - Using the soil moisture information to automatically trigger watering of plants.
-
-<!--
-Show the final results of your project. Give your final thoughts on how you think the project went. What could have been done in an other way, or even better? Pictures are nice!
-
-- [ ] Show final results of the project
-- [ ] Pictures
-- [ ] \*Video presentation
--->
 
 
 
@@ -310,6 +324,7 @@ Show the final results of your project. Give your final thoughts on how you thin
 
 ## Useful links
 
+- [Raspberry Pi Pico datasheet](https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf)
 - [DHT11 sensor example for RP2](<https://github.com/iot-lnu/applied-iot/tree/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/sensor-examples/P5_DHT_11_DHT_22>)
 - [FC-28 sensor example for Arduino](https://lastminuteengineers.com/soil-moisture-sensor-arduino-tutorial/)
 - [Measuring from the analog pins on RP2](https://pycopy.readthedocs.io/en/latest/rp2/quickref.html#adc-analog-to-digital-conversion)
