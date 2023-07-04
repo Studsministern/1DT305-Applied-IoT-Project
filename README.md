@@ -4,7 +4,7 @@
 
 My name is Eric Weidow, and this project is a part of the Applied IoT summer course at Linnaeus University (student credentials: ew223me), Sweden. My goal with this project is to monitor and indoor plant and send a notification when the plant needs to be watered. It will be used to remind to to water my plants, as I have always been bad at taking care of them. Additionally, it gives me a great amount of expericene with IoT, microcontrollers, sensors, Python, and much more!
 
-My implementation uses a Raspberry Pi Pico WH (henceforth called **RP2**) with two sensors to measure air temperature, air humidity, and the soil moisture for an indoor plant. The data is sent via Wi-Fi to [Adafruit IO](https://io.adafruit.com/) (AIO) using the MQTT protocol. The data is stored in the Adafruit IO account and displayed using a dashboard.
+My implementation uses a Raspberry Pi Pico WH (henceforth called **RP2**) with two sensors to measure air temperature, air humidity, and the soil moisture for an indoor plant. The data is sent via Wi-Fi to [Adafruit IO](https://io.adafruit.com/) (AIO) using the MQTT protocol. The data is stored in the Adafruit IO account and displayed using a dashboard. A Adafruit IO Reactive Action is used to send a notification when the soil moisture is below a set threshold. 
 
 **Approximate build time**: 3-4 hours
 
@@ -178,7 +178,7 @@ With the code equivalent:
 
 The platform chosen for this project is [Adafruit IO](https://io.adafruit.com/) (AIO). It is very simple to setup, and also offers the option of building dashboards. It has a free tier which allows up to 2 devices, 5 groups, 10 feeds, 5 dashboards, a data rate of 30 messages per minute, and also provides 30 days storage. This project only needs 1 group, 3 feeds, 1 dashboard and a very low data rate, which means the free tier works perfect.
 
-To use the platform, it is required to make an account. Then a group with three feeds need to be setup: one feed for the DHT11 temperature values, one for the DHT11 humidity values and one for the FC-28 soil moisture values. Adafruit IO has great [basics tutorials](https://learn.adafruit.com/search?q=Adafruit%2520IO%2520Basics) to help with these steps.
+To use the platform, it is required to make an account. Then a group with three feeds need to be setup: one feed for the DHT11 temperature values, one for the DHT11 humidity values and one for the FC-28 soil moisture values. Adafruit IO has great [basics tutorials for Feeds](https://learn.adafruit.com/adafruit-io-basics-feeds) to help with these steps.
 
 
 
@@ -204,7 +204,7 @@ pymakr.conf      - # Pymakr configuration file
 
 `main.py` is where most of the code is. It contains all setup and measuring of sensors. It uses functions from `lib/wifi.py` to connect to and disconnect from Wi-Fi, and functions from `lib/mqtt.py` to connect to, publish to and disconnect from Adafruit IO.
 
-The program itself is in a very long loop, which looks very complicated. However, it is actually quite simple. The first step of the loop is connecting to Wi-Fi and the MQTT broker (Adafruit IO). The onboard LED blinks three times after connecting to Wi-Fi, and three times after connecting to the MQTT broker:
+The program itself is in a very long loop. However, each step is quite simple. The first step of the loop is connecting to Wi-Fi and the MQTT broker (Adafruit IO). The onboard LED blinks three times after connecting to Wi-Fi, and three times after connecting to the MQTT broker:
 
 https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L82-L98
 
@@ -281,6 +281,9 @@ For this project, Wi-Fi works very well, even if the data rate is overkill when 
 
 The data is stored in Adafruit IO every time data is received, which is every 20 minutes. With the free tier, data is stored for 30 days. This is more than enough for the current extent of this project, as 30 days covers several watering cycles for a plant. If the purpose would change in the future, for example if one would like to analyse data to predict when a plant needs to be watered, another database solution may be needed. But right now the current implementation works very well.
 
+#### Dashboard
+A dashboard in Adafruit IO is used to visualize the published data. To setup a dashboard and visualize data in Adafruit IO, their [basics tutorials for Dashboards](https://learn.adafruit.com/adafruit-io-basics-dashboards) explains the topic very well.
+
 <div align="center">
     <img src="img/Dashboard.png" width=600>
     <h6>
@@ -288,7 +291,15 @@ The data is stored in Adafruit IO every time data is received, which is every 20
     </h6>
 </div>
 
-To setup a dashboard and visualize data in Adafruit IO, their [basics tutorials](https://learn.adafruit.com/search?q=Adafruit%2520IO%2520Basics) once again explain the topic very well.
+#### Notification
+A notification is sent when the soil moisture is lower than a certain threshold. This is once again done with Adafruit IO. This time, their Reactive Actions are used to send an email. And Adafruit IO has a great [tutorial for how to use Reactive Actions](https://learn.adafruit.com/wifi-mailbox-notifier/adafruit-io-reactive-action) to set up notifications. When set up, you can receive an email like in figure 5, below!
+
+<div align="center">
+    <img src="img/Adafruit IO email.png" width=400>
+    <h6>
+        <b>Figure 5</b>. An email notification from Adafruit IO's Reactive Actions. The action is set to send an email when the soil moisture is below a set threshold, and will only send one email per 24 hours.
+    </h6>
+</div>
 
 
 
@@ -302,15 +313,15 @@ To setup a dashboard and visualize data in Adafruit IO, their [basics tutorials]
         <img src="img/Finished project 3.jpg" height=400>
     </div>
     <h6>
-        <b>Figure 5</b>. The finished IoT device!
+        <b>Figure 6</b>. The finished IoT device!
     </h6>
 </div>
 
-I am very satisfied with this project. It has taught me a lot, and I believe it provides a great starting point for further development. The code is very forgiving, as it will continue trying to reconnect to Wi-Fi and Adafruit IO until it succeeds. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller, the sensors themselves and wires to connect them. There is still a lot of room for improvement, but as a first IoT project it works very well!
+I am very satisfied with this project. It has taught me a lot, and I believe it provides a great starting point for further development. The code works well, as it will continue trying to reconnect to Wi-Fi and Adafruit IO until it succeeds. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller, the sensors themselves and wires to connect them. There is still a lot of room for improvement, but as a first IoT project it works very well!
 
 #### Further improvements
-Some ideas for how to improveme on this project are:
-- Simplifying the code. It works very well but is a bit too complicated. There are some try-catch statements that may be unneccessary, and maybe even some variables that are not needed.
+Some ideas for how to improve on this project are:
+- Simplifying the code. It works very well but some parts could definitely be done even better. There are some try-catch statements that may be unneccessary, and maybe even some variables that are not needed.
 - Connecting all electronics on a small experimental board or custom made PCB, and 3D-print a case for it. The FC-28 sensor probe and the micro-USB cable would then be connected to this case.
 - Using batteries for power.
 - Using subscription to be able to change delays or other settings from a dashboard.
