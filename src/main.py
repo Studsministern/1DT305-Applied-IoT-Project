@@ -2,52 +2,47 @@ from dht import DHT11
 from machine import ADC, Pin
 import utime as time
 import env
-from lib.wifi import wifi_connect, wifi_disconnect
+from lib.wifi import WiFi
 from lib.mqtt import MQTTClient
 
 
 
-### SENSORS SETUP ###
-led = Pin("LED", Pin.OUT)
-dht11 = DHT11(Pin(26))                 # DHT11 Constructor with GP26 pin
+### SETUP ###
+# LED and sensors
+led = Pin("LED", Pin.OUT)              # The Raspberry Pi onboard LED
+dht11 = DHT11(Pin(26))                 # GP26 pin for measuring from the DHT11
 soil_moisture_power = Pin(27, Pin.OUT) # GP27 pin used to provide 3.3V VCC to the soil moisture sensor
-soil_moisture_power.off()              # Making sure the soil moisture sensor is off when the program starts
-soil_moisture_sensor = ADC(Pin(28))    # Soil moisture sensor with ADC2 pin (same pin as GP28)
+soil_moisture_sensor = ADC(Pin(28))    # ADC2 pin for measuring from the FC28
 
-# Blinking LED once to show on the board when trying to connect to WiFi, or when information is published
+# Making sure the soil moisture sensor is off when starting the program
+soil_moisture_power.off()
+
+# Creating a MQTT client variable
+global mqttClient
+
+
+
+### FUNCTIONS ###
 def led_blink_once(half_delay):
     led.on()
     time.sleep(half_delay)
     led.off()
     time.sleep(half_delay)
 
-# Measuring air temperature and humidity
 def measure_dht11():
-    try:
-        dht11.measure()
-        temperature = dht11.temperature()
-        humidity = dht11.humidity()
-        return temperature, humidity
-    except Exception as err:
-        print('An exception occured when measuring temperature and humidity.' + str(err))
+    dht11.measure()
+    temperature = dht11.temperature()
+    humidity = dht11.humidity()
+    return temperature, humidity
 
-# Measuring soil moisture
 def measure_fc28():
-    try:
-        soil_moisture_power.on()
-        time.sleep(2) # Keeping the power for the soil moisture sensor on for a few seconds so a correct measurement is received
-        moisturePercent = 100 - (soil_moisture_sensor.read_u16() / 65535 * 100)
-        soil_moisture_power.off()
-        return moisturePercent
-    except Exception as err:
-        print('An exception occured when measuring soil moisture.' + str(err))
+    soil_moisture_power.on()
+    time.sleep(2) # Keeping the power for the soil moisture sensor on for a few seconds so a correct measurement is received
+    moisturePercent = 100 - (soil_moisture_sensor.read_u16() / 65535 * 100)
+    soil_moisture_power.off()
+    return moisturePercent
 
-
-
-### MQTT SETUP ###
-mqttClient = None
-# Function to publish data to Adafruit IO MQTT server
-def mqtt_publish(mqttClient, mqtt_feed, data):
+def mqtt_publish(mqtt_feed, data):
     print('Publishing: {0} to {1} ... '.format(data, mqtt_feed), end='')
     try:
         mqttClient.publish(topic=mqtt_feed, msg=str(data))
@@ -56,37 +51,29 @@ def mqtt_publish(mqttClient, mqtt_feed, data):
     except Exception as e:
         print('FAILED', e)
 
+def disconnect_all():
+    # Making sure the soil moisture sensor does not stay on
+    soil_moisture_power.off()
 
+    # Disconnect MQTT Client and WiFi
+    mqttClient.disconnect()
+    print('\nDisconnected from Adafruit IO')
 
-### DISCONNECTING ###
-def disconnect_all(mqttClient):
-    soil_moisture_power.off() # Making sure the soil moisture sensor does not stay on
-    print()
-
-    # Disconnecting the MQTT client
-    try:
-        mqttClient.disconnect()
-        print('Disconnected from Adafruit IO')
-        mqttClient = None
-        print('MQTTClient cleaned up')
-    except NameError as e:
-        print('The mqttClient was not connected when trying to disconnect', e)
-
-    wifi_disconnect()
+    WiFi.disconnect()
 
 
 
-### MAIN PROGRAM ###
+### LOOP ###
 while True:
     try:
-        ### Connecting to WiFi ###
-        wifi_connect()
+        # Connecting to WiFi
+        WiFi.connect()
 
         # Blink when the WiFi is connected
         for i in range(0, 3):
             led_blink_once(0.05)
         
-        ### Connecting to MQTT broker
+        # Connecting to MQTT broker
         print(f'Begin connection with MQTT Broker :: {env.AIO_BROKER}')
         mqttClient = MQTTClient(client_id=env.AIO_CLIENT_ID, server=env.AIO_BROKER, port=env.AIO_PORT, user=env.AIO_USERNAME, password=env.AIO_ACCESS_KEY)
         mqttClient.connect()
@@ -96,35 +83,28 @@ while True:
         for i in range(0, 3):
             led_blink_once(0.05)
         
-        ### Measuring ###
+        # Measuring
         temperature, humidity = measure_dht11()
         moisturePercent = measure_fc28()
 
-        print(
-            'Temperature is {} degrees Celsius. Humidity is {}%RH. Soil moisture is {}%'.format(
-                temperature, humidity, int(moisturePercent)
-            )
-        )
+        print(f'Temperature is {temperature} degrees Celcius. Humidity is {humidity}%RH. Soil moisture is {int(moisturePercent)}%')
 
-        ### Publishing ###
-        try:
-            mqtt_publish(mqttClient, env.AIO_FEED_TEMPERATURE, temperature)
-            mqtt_publish(mqttClient, env.AIO_FEED_HUMIDITY, humidity)
-            mqtt_publish(mqttClient, env.AIO_FEED_MOISTURE, moisturePercent)
-        except:
-            print(f'Something went wrong when publishing. Connecting again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.')
-            time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
-            continue
+        # Publishing
+        mqtt_publish(env.AIO_FEED_TEMPERATURE, temperature)
+        mqtt_publish(env.AIO_FEED_HUMIDITY, humidity)
+        mqtt_publish(env.AIO_FEED_MOISTURE, moisturePercent)
 
-        ### Disconnecting and going to sleep ###
-        disconnect_all(mqttClient)
+        # Disconnecting and going to sleep
+        disconnect_all()
         print(f'Going to sleep for {env.AIO_PUBLISH_INTERVAL} seconds ...')
         time.sleep(env.AIO_PUBLISH_INTERVAL)
     except KeyboardInterrupt:
         # Disconnect and clean up if the user causes a KeyboardInterrupt
+        disconnect_all()
         print('Keyboard interrupt')
-        disconnect_all(mqttClient)
         break
     except Exception as e:
-        print(f'Did not manage to connect to WiFi or broker. Trying again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.')
+        # Disconnect and try connecting again if another exception is thrown
+        disconnect_all()
+        print(f'Did not manage to connect to WiFi or MQTT broker. Trying again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.')
         time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
