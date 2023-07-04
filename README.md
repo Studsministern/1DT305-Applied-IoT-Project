@@ -206,25 +206,27 @@ pymakr.conf      - # Pymakr configuration file
 
 The program itself is in a very long loop. However, each step is quite simple. The first step of the loop is connecting to Wi-Fi and the MQTT broker (Adafruit IO). The onboard LED blinks three times after connecting to Wi-Fi, and three times after connecting to the MQTT broker:
 
-https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L82-L98
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/209f02c0b395995ac8ec02f4836f78cc5eb706fd/src/main.py#L69-L85
 
 When the Wi-Fi connection and MQTT connection are setup, values are measured from the sensors and printed to the console:
 
-https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L99-L108
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/209f02c0b395995ac8ec02f4836f78cc5eb706fd/src/main.py#L86-L91
 
 After measuring, the values are published to Adafruit IO. The onboard LED will blink once for each successful publishing:
 
-https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L109-L118
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/209f02c0b395995ac8ec02f4836f78cc5eb706fd/src/main.py#L92-L96
 
 If we have gotten this far without an exception being thrown, we are done with the publishing! We now want the RP2 to sleep (set with `MQTT_PUBLISH_INTERVAL`, default is 20 minutes). But before going to sleep, we disconnect the RP2 from Wi-Fi and Adafruit IO, and turn off the soil moisture sensor's power, using our own `disconnect_all` function:
 
-https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L119-L122
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/209f02c0b395995ac8ec02f4836f78cc5eb706fd/src/main.py#L97-L100
+
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/209f02c0b395995ac8ec02f4836f78cc5eb706fd/src/main.py#L54-L63
 
 After the RP2 wakes up, it will start at the beginning of the loop, and continue publishing every `MQTT_PUBLISH_INTERVAL` seconds! However, if an exception is thrown at any moment, the RP2 will sleep (set with `WiFi_TRY_RECONNECT_INTERVAL`, default is 1 minute) and then the loop starts over. Because of this, a temporary loss of Wi-Fi will be solved by itself.
 
-The only way of exiting the loop is by a KeyboardInterrupt, then the Wi-Fi and MQTT Broker is disconnected, and the soil moisture sensor's power is turned off, before the RP2 stops the program:
+The only way of exiting the loop is by a KeyboardInterrupt. Then the `disconnect_all` function is called once again, and then the program is stopped by breaking the loop:
 
-https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/1c357c3f17382f9b52a02110dce34a8df8242877/src/main.py#L123-L127
+https://github.com/Studsministern/1DT305-Applied-IoT-Project/blob/209f02c0b395995ac8ec02f4836f78cc5eb706fd/src/main.py#L101-L105
 
 The sleep times `MQTT_PUBLISH_INTERVAL` and `WiFi_TRY_RECONNECT_INTERVAL`, along with all other environment variables, are set in `env.py`. The file has to be created by the user and should contain all variables from the file `env.py.example`, but with the values changed to the corresponding usernames, password, keys, etcetera:
 
@@ -248,8 +250,8 @@ AIO_FEED_MOISTURE           = ''                                     # Feed for 
 
 Finally we have the files in the library folder (`lib/*`):
 - `__init.py__` has to be in the `lib` folder to be able to import `mqtt.py` and `wifi.py` from `main.py`.
-- `mqtt.py` contains functions to create a MQTT Client, connect to a broker, publish a MQTT message and disconnect. It was provided by Linnaeus University from their [Applied IoT GitHub repository](https://github.com/iot-lnu/applied-iot/blob/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/network-examples/N2_WiFi_MQTT_Webhook_Adafruit/lib/mqtt.py).
-- `wifi.py` contains functions that connects to and disconnects from Wi-Fi.
+- `mqtt.py` contains functions to create a MQTTClient, connect to a broker, publish a MQTT message and disconnect. It is a copy of [this file](https://github.com/iot-lnu/applied-iot/blob/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/network-examples/N2_WiFi_MQTT_Webhook_Adafruit/lib/mqtt.py) and was provided by Linnaeus University from their [Applied IoT GitHub repository](https://github.com/iot-lnu/applied-iot/).
+- `wifi.py` contains functions that connects to and disconnects from Wi-Fi. It is written by me, but takes inspriation from [this file](https://github.com/iot-lnu/applied-iot/blob/master/Raspberry%20Pi%20Pico%20(W)%20Micropython/network-examples/N2_WiFi_MQTT_Webhook_Adafruit/lib/wifiConnection.py), once again from Linnaeus University's [Applied IoT GitHub repository](https://github.com/iot-lnu/applied-iot/).
 
 In the figure below, we see what the terminal output can look like if everything works as intended!
 
@@ -282,7 +284,7 @@ For this project, Wi-Fi works very well, even if the data rate is overkill when 
 The data is stored in Adafruit IO every time data is received, which is every 20 minutes. With the free tier, data is stored for 30 days. This is more than enough for the current extent of this project, as 30 days covers several watering cycles for a plant. If the purpose would change in the future, for example if one would like to analyse data to predict when a plant needs to be watered, another database solution may be needed. But right now the current implementation works very well.
 
 #### Dashboard
-A dashboard in Adafruit IO is used to visualize the published data. To setup a dashboard and visualize data in Adafruit IO, their [basics tutorials for Dashboards](https://learn.adafruit.com/adafruit-io-basics-dashboards) explains the topic very well.
+A dashboard in Adafruit IO is used to visualize the published data. To setup a dashboard and visualize data in Adafruit IO, I would refer to their [basics tutorials for Dashboards](https://learn.adafruit.com/adafruit-io-basics-dashboards) as these explain the topic very well.
 
 <div align="center">
     <img src="img/Dashboard.png" width=600>
@@ -297,7 +299,7 @@ A notification is sent when the soil moisture is lower than a certain threshold.
 <div align="center">
     <img src="img/Adafruit IO email.png" width=400>
     <h6>
-        <b>Figure 5</b>. An email notification from Adafruit IO's Reactive Actions. The action is set to send an email when the soil moisture is below a set threshold, and will only send one email per 24 hours.
+        <b>Figure 5</b>. An email notification from Adafruit IO's Reactive Actions. I configured the action to send an email when the soil moisture is below 20%, and limited this to only send one email per 24 hours.
     </h6>
 </div>
 
@@ -317,14 +319,14 @@ A notification is sent when the soil moisture is lower than a certain threshold.
     </h6>
 </div>
 
-I am very satisfied with this project. It has taught me a lot, and I believe it provides a great starting point for further development. The code works well, as it will continue trying to reconnect to Wi-Fi and Adafruit IO until it succeeds. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller, the sensors themselves and wires to connect them. There is still a lot of room for improvement, but as a first IoT project it works very well!
+I am very satisfied with this project. It has taught me a lot, and I believe it provides a great starting point for further development. The code works well, and it will continue trying to reconnect to Wi-Fi and Adafruit IO until it succeeds. The circuitry is also extremely simple, as it doesn't require any extra components other than the microcontroller, the sensors themselves and wires to connect them. There is still a lot of room for improvement, but as a first IoT project it works very well!
 
 #### Further improvements
 Some ideas for how to improve on this project are:
-- Simplifying the code. It works very well but some parts could definitely be done even better. There are some try-catch statements that may be unneccessary, and maybe even some variables that are not needed.
+- Connect a MQTT app to be able to send mobile notifications. Perhaps [MQTT Dashboard](https://play.google.com/store/apps/details?id=com.app.vetru.mqttdashboard&hl=en_US) or [Home Assistant](https://play.google.com/store/apps/details?id=io.homeassistant.companion.android&hl=en_US).
 - Connecting all electronics on a small experimental board or custom made PCB, and 3D-print a case for it. The FC-28 sensor probe and the micro-USB cable would then be connected to this case.
-- Using batteries for power.
-- Using subscription to be able to change delays or other settings from a dashboard.
+- Using batteries for power. This may require using LoRaWAN instead of Wi-Fi. Or maybe even [a custom version of MicroPython](https://ghubcoder.github.io/posts/deep-sleeping-the-pico-micropython/) to be able to put the RP2 in deep sleep.
+- Using subscriptions or a local web server to change delays or other settings from a dashboard.
 - Using the soil moisture information to automatically trigger watering of plants.
 
 
