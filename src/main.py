@@ -17,13 +17,7 @@ soil_moisture_sensor = ADC(Pin(28))  # ADC2 pin for measuring from the FC28
 soil_moisture_power.off()
 
 # Creating a MQTT client variable
-mqttClient = MQTTClient(
-    client_id=env.AIO_CLIENT_ID,
-    server=env.AIO_BROKER,
-    port=env.AIO_PORT,
-    user=env.AIO_USERNAME,
-    password=env.AIO_ACCESS_KEY,
-)
+global mqttClient
 
 
 ### FUNCTIONS ###
@@ -83,6 +77,13 @@ while True:
 
         # Connecting to MQTT broker
         print(f"Begin connection with MQTT Broker :: {env.AIO_BROKER}")
+        mqttClient = MQTTClient(
+            client_id=env.AIO_CLIENT_ID,
+            server=env.AIO_BROKER,
+            port=env.AIO_PORT,
+            user=env.AIO_USERNAME,
+            password=env.AIO_ACCESS_KEY,
+        )
         mqttClient.connect()
         print(f"Connected to MQTT Broker :: {env.AIO_BROKER}\n")
 
