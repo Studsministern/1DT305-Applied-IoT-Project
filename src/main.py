@@ -55,14 +55,17 @@ def mqtt_publish(mqtt_feed, data):
 
 
 def disconnect_all():
-    # Making sure the soil moisture sensor does not stay on
-    soil_moisture_power.off()
+    try:
+        # Making sure the soil moisture sensor does not stay on
+        soil_moisture_power.off()
 
-    # Disconnect MQTT Client and WiFi
-    mqttClient.disconnect()
-    print("\nDisconnected from Adafruit IO")
+        # Disconnect MQTT Client and WiFi
+        mqttClient.disconnect()
+        print("\nDisconnected from Adafruit IO")
 
-    WiFi.disconnect()
+        WiFi.disconnect()
+    except Exception as e:
+        print("Error when disconnecting")
 
 
 ### LOOP ###
@@ -115,8 +118,7 @@ while True:
         break
     except Exception as e:
         # Disconnect and try connecting again if another exception is thrown
+        print("\nDid not manage to connect to WiFi or MQTT broker.")
         disconnect_all()
-        print(
-            f"Did not manage to connect to WiFi or MQTT broker. Trying again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds."
-        )
+        print(f"Trying again in {env.WIFI_TRY_RECONNECT_INTERVAL} seconds.")
         time.sleep(env.WIFI_TRY_RECONNECT_INTERVAL)
